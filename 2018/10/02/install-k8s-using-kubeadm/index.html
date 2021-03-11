@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eliu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="概述本教程将利用 Kubernetes 官方认为安装部署集群环境的最佳实践 - kubeadm 进行环境搭建。安装成功之后，我们仍然使用《Kubernetes 本地快速搭建指南》中所介绍的 Web 应用示例来部署至集群环境中，并以此确认集群是否可用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 kubeadm 快速安装 Kubernetes 集群">
+<meta property="og:url" content="https://eliu.github.io/2018/10/02/install-k8s-using-kubeadm/index.html">
+<meta property="og:site_name" content="楓の葉">
+<meta property="og:description" content="概述本教程将利用 Kubernetes 官方认为安装部署集群环境的最佳实践 - kubeadm 进行环境搭建。安装成功之后，我们仍然使用《Kubernetes 本地快速搭建指南》中所介绍的 Web 应用示例来部署至集群环境中，并以此确认集群是否可用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://eliu.github.io/2018/10/02/install-k8s-using-kubeadm/dashboard-login.png">
+<meta property="og:image" content="https://eliu.github.io/2018/10/02/install-k8s-using-kubeadm/dashboard-home.png">
+<meta property="og:image" content="https://eliu.github.io/2018/10/02/install-k8s-using-kubeadm/demo.png">
+<meta property="article:published_time" content="2018-10-02T08:11:04.000Z">
+<meta property="article:modified_time" content="2020-03-23T15:37:46.321Z">
+<meta property="article:author" content="eliu">
+<meta property="article:tag" content="Kubernetes">
+<meta property="article:tag" content="kubeadm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eliu.github.io/2018/10/02/install-k8s-using-kubeadm/dashboard-login.png">
+
+<link rel="canonical" href="https://eliu.github.io/2018/10/02/install-k8s-using-kubeadm/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>使用 kubeadm 快速安装 Kubernetes 集群 | 楓の葉</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">楓の葉</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">花有重开时，人无再少年</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2018/10/02/install-k8s-using-kubeadm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="eliu">
+      <meta itemprop="description" content="楓の葉的技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用 kubeadm 快速安装 Kubernetes 集群
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-10-02 16:11:04" itemprop="dateCreated datePublished" datetime="2018-10-02T16:11:04+08:00">2018-10-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 23:37:46" itemprop="dateModified" datetime="2020-03-23T23:37:46+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>本教程将利用 Kubernetes 官方认为安装部署集群环境的最佳实践 - kubeadm 进行环境搭建。安装成功之后，我们仍然使用《Kubernetes 本地快速搭建指南》中所介绍的 Web 应用示例来部署至集群环境中，并以此确认集群是否可用。</p>
+<span id="more"></span>
+
+<h3 id="kubeadm-简介"><a href="#kubeadm-简介" class="headerlink" title="kubeadm 简介"></a>kubeadm 简介</h3><p>在 CentOS / RHEL 环境中，安装 Kubernetes 的最简单的方式就是通过 <code>yum install kubernetes</code> 来完成，但仍然需要修改各个组件的启动参数，才能完成 Kubernetes 集群的设置，整个过程较为复杂，也容易出错。因此，从 Kubernetes v1.4 版本开始，官方正式引入了命令行工具 kubeadm ，致力于简化集群环境的安装和解决 Kubernetes 集群的高可用的问题。但直到 v1.9 版本，此工具还不能用于生产环境。按照官方的计划，此工具将会在 2018 年内正式面向生产环境推出。所以在现阶段，此工具比较适合初学者安装和学习 Kubernetes。</p>
+<h3 id="kubeadm-版本"><a href="#kubeadm-版本" class="headerlink" title="kubeadm 版本"></a>kubeadm 版本</h3><p>本教程将使用 kubeadm 的 <code>v1.9.2</code> 版本安装 Kubernetes 集群。在默认情况下，使用 kubeadm 安装的 Kubernetes 的主版本和 kubeadm 相一致，此处为 <code>v1.9.x</code> 。如果读者想要安装其他的版本，则使用 <code>--kubernetes-version</code> 参数来指定 Kubernetes 的版本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init --kubernetes-version=vx.y.z</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>本教程将使用64位的 CentOS 7 操作系统作为安装环境，读者可以根据实际情况来进行准备。笔者个人推荐 VirtualBox + Vagrant 在本机快速搭建环境，具体可以参考《Kubernetes 本地快速搭建指南》，此处不再赘述。</p>
+<h2 id="安装-kubeadm"><a href="#安装-kubeadm" class="headerlink" title="安装 kubeadm"></a>安装 kubeadm</h2><p>本节将详细介绍 kubeadm 在 CentOS 7 下的安装步骤。</p>
+<h3 id="设置主机名称"><a href="#设置主机名称" class="headerlink" title="设置主机名称"></a>设置主机名称</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hostnamectl set-hostname kubeadm-master</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;127.0.0.1 kubeadm-master&quot;</span> &gt;&gt; /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<h3 id="关闭-SELinux"><a href="#关闭-SELinux" class="headerlink" title="关闭 SELinux"></a>关闭 SELinux</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">setenforce 0</span><br><span class="line">sed -i <span class="string">&#x27;s/SELINUX=enforcing/SELINUX=permissive/g&#x27;</span> /etc/selinux/config</span><br></pre></td></tr></table></figure>
+
+<h3 id="禁用-SWAP"><a href="#禁用-SWAP" class="headerlink" title="禁用 SWAP"></a>禁用 SWAP</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">swapoff -a</span><br></pre></td></tr></table></figure>
+
+<h3 id="禁用防火墙"><a href="#禁用防火墙" class="headerlink" title="禁用防火墙"></a>禁用防火墙</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line">systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+
+<h3 id="微调内核设置"><a href="#微调内核设置" class="headerlink" title="微调内核设置"></a>微调内核设置</h3><p>对于 RHEL/CentOS 系统，由于 iptables 的设置，网络流量可能被错误的路由，因此要对内核进行如下调整：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;<span class="string">EOF &gt;  /etc/sysctl.d/k8s.conf</span></span><br><span class="line"><span class="string">net.bridge.bridge-nf-call-ip6tables = 1</span></span><br><span class="line"><span class="string">net.bridge.bridge-nf-call-iptables = 1</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line">sysctl --system</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装依赖的程序包"><a href="#安装依赖的程序包" class="headerlink" title="安装依赖的程序包"></a>安装依赖的程序包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y update &amp;&amp; yum -y upgrade</span><br><span class="line">yum -y install docker socat</span><br></pre></td></tr></table></figure>
+
+<h3 id="离线安装-kubeadm"><a href="#离线安装-kubeadm" class="headerlink" title="离线安装 kubeadm"></a>离线安装 kubeadm</h3><p>官方推荐设置 yum 源进行 kubeadm 的安装，不过在国内的网络环境下，谷歌的服务无法被正确的访问。此处采用离线安装方式安装 rpm 包。读者可以前往 <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1kWfpPdl">https://pan.baidu.com/s/1kWfpPdl</a> 进行下载。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh /path/to/kubectl-1.9.2-0.x86_64.rpm \</span><br><span class="line">         /path/to/kubernetes-cni-0.6.0-0.x86_64.rpm \</span><br><span class="line">         /path/to/kubelet-1.9.2-0.x86_64.rpm \</span><br><span class="line">         /path/to/kubeadm-1.9.2-0.x86_64.rpm</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动-kubeadm"><a href="#启动-kubeadm" class="headerlink" title="启动 kubeadm"></a>启动 kubeadm</h2><p>本节将对 kubeadm 启动前进行参数配置，同时将 Kubernetes 的附加功 Dashboard 也同时进行部署。</p>
+<h3 id="设置-Docker-镜像加速器"><a href="#设置-Docker-镜像加速器" class="headerlink" title="设置 Docker 镜像加速器"></a>设置 Docker 镜像加速器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;<span class="string">EOF &gt; /etc/docker/daemon.json</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">  &quot;registry-mirrors&quot; : [</span></span><br><span class="line"><span class="string">    &quot;http://4a0fee72.m.daocloud.io&quot;</span></span><br><span class="line"><span class="string">  ]</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="启动-docker-和-kubelet-服务"><a href="#启动-docker-和-kubelet-服务" class="headerlink" title="启动 docker 和 kubelet 服务"></a>启动 docker 和 kubelet 服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> docker &amp;&amp; systemctl start docker</span><br><span class="line">systemctl <span class="built_in">enable</span> kubelet &amp;&amp; systemctl start kubelet</span><br></pre></td></tr></table></figure>
+
+<h3 id="导入-Docker-镜像"><a href="#导入-Docker-镜像" class="headerlink" title="导入 Docker 镜像"></a>导入 Docker 镜像</h3><p>由于谷歌服务无法访问，因此相关的 Docker 镜像需要通过代理提前下载好，并进行打包。读者可以从 <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1kWfpPdl">https://pan.baidu.com/s/1kWfpPdl</a> 进行下载。导入镜像命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ docker load -i /path/to/kubeadm/v1.9.2/docker-images.tar</span><br><span class="line">Loaded image: gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.7</span><br><span class="line">Loaded image: gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.7</span><br><span class="line">Loaded image: gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.7</span><br><span class="line">Loaded image: gcr.io/google_containers/etcd-amd64:3.1.11</span><br><span class="line">Loaded image: gcr.io/google_containers/kube-controller-manager-amd64:v1.9.2</span><br><span class="line">Loaded image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.2</span><br><span class="line">Loaded image: k8s.gcr.io/kubernetes-dashboard-amd64:v1.8.2</span><br><span class="line">Loaded image: gcr.io/google_containers/kube-proxy-amd64:v1.9.2</span><br><span class="line">Loaded image: gcr.io/google_containers/kube-apiserver-amd64:v1.9.2</span><br><span class="line">Loaded image: gcr.io/google_containers/pause-amd64:3.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动-kubeadm-1"><a href="#启动-kubeadm-1" class="headerlink" title="启动 kubeadm"></a>启动 kubeadm</h3><p>使用 <code>kubeadm init</code> 初始化并启动 Kubernetes 集群。其中的几个重要参数选项列示如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数选项</th>
+<th>参考值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--kubernetes-version</code></td>
+<td>v1.9.2</td>
+<td>Kubernetes 的版本</td>
+</tr>
+<tr>
+<td><code>--pod-network-cidr</code></td>
+<td>10.244.0.0/16</td>
+<td>Pod 网络寻址范围，此处是网络插件 Flannel 用到</td>
+</tr>
+<tr>
+<td><code>--apiserver-advertise-address</code></td>
+<td>CentOS 主机的 IP</td>
+<td>Kubernetes 集群的 apiserver (主节点) 的地址</td>
+</tr>
+</tbody></table>
+<p>启动 kubeadm 的命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">$ kubeadm init \</span><br><span class="line">  --kubernetes-version=v1.9.2 \</span><br><span class="line">  --pod-network-cidr=10.244.0.0/16 \</span><br><span class="line">  --apiserver-advertise-address=192.168.119.101</span><br><span class="line"><span class="comment"># 以下是 kubeadm 初始化时的输出信息</span></span><br><span class="line">[init] Using Kubernetes version: v1.9.2</span><br><span class="line">[init] Using Authorization modes: [Node RBAC]</span><br><span class="line">[preflight] Running pre-flight checks.</span><br><span class="line">[WARNING FileExisting-crictl]: crictl not found <span class="keyword">in</span> system path</span><br><span class="line">[certificates] Generated ca certificate and key.</span><br><span class="line">[certificates] Generated apiserver certificate and key.</span><br><span class="line">[certificates] apiserver serving cert is signed <span class="keyword">for</span> DNS names [kubeadm-master kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 192.168.119.101]</span><br><span class="line">[certificates] Generated apiserver-kubelet-client certificate and key.</span><br><span class="line">[certificates] Generated sa key and public key.</span><br><span class="line">[certificates] Generated front-proxy-ca certificate and key.</span><br><span class="line">[certificates] Generated front-proxy-client certificate and key.</span><br><span class="line">[certificates] Valid certificates and keys now exist <span class="keyword">in</span> <span class="string">&quot;/etc/kubernetes/pki&quot;</span></span><br><span class="line">[kubeconfig] Wrote KubeConfig file to disk: <span class="string">&quot;admin.conf&quot;</span></span><br><span class="line">[kubeconfig] Wrote KubeConfig file to disk: <span class="string">&quot;kubelet.conf&quot;</span></span><br><span class="line">[kubeconfig] Wrote KubeConfig file to disk: <span class="string">&quot;controller-manager.conf&quot;</span></span><br><span class="line">[kubeconfig] Wrote KubeConfig file to disk: <span class="string">&quot;scheduler.conf&quot;</span></span><br><span class="line">[controlplane] Wrote Static Pod manifest <span class="keyword">for</span> component kube-apiserver to <span class="string">&quot;/etc/kubernetes/manifests/kube-apiserver.yaml&quot;</span></span><br><span class="line">[controlplane] Wrote Static Pod manifest <span class="keyword">for</span> component kube-controller-manager to <span class="string">&quot;/etc/kubernetes/manifests/kube-controller-manager.yaml&quot;</span></span><br><span class="line">[controlplane] Wrote Static Pod manifest <span class="keyword">for</span> component kube-scheduler to <span class="string">&quot;/etc/kubernetes/manifests/kube-scheduler.yaml&quot;</span></span><br><span class="line">[etcd] Wrote Static Pod manifest <span class="keyword">for</span> a <span class="built_in">local</span> etcd instance to <span class="string">&quot;/etc/kubernetes/manifests/etcd.yaml&quot;</span></span><br><span class="line">[init] Waiting <span class="keyword">for</span> the kubelet to boot up the control plane as Static Pods from directory <span class="string">&quot;/etc/kubernetes/manifests&quot;</span>.</span><br><span class="line">[init] This might take a minute or longer <span class="keyword">if</span> the control plane images have to be pulled.</span><br><span class="line">[apiclient] All control plane components are healthy after 30.502464 seconds</span><br><span class="line">[uploadconfig] Storing the configuration used <span class="keyword">in</span> ConfigMap <span class="string">&quot;kubeadm-config&quot;</span> <span class="keyword">in</span> the <span class="string">&quot;kube-system&quot;</span> Namespace</span><br><span class="line">[markmaster] Will mark node kubeadm-master as master by adding a label and a taint</span><br><span class="line">[markmaster] Master kubeadm-master tainted and labelled with key/value: node-role.kubernetes.io/master=<span class="string">&quot;&quot;</span></span><br><span class="line">[bootstraptoken] Using token: 3a9f97.1cd340e0f34adbbb</span><br><span class="line">[bootstraptoken] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs <span class="keyword">in</span> order <span class="keyword">for</span> nodes to get long term certificate credentials</span><br><span class="line">[bootstraptoken] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token</span><br><span class="line">[bootstraptoken] Configured RBAC rules to allow certificate rotation <span class="keyword">for</span> all node client certificates <span class="keyword">in</span> the cluster</span><br><span class="line">[bootstraptoken] Creating the <span class="string">&quot;cluster-info&quot;</span> ConfigMap <span class="keyword">in</span> the <span class="string">&quot;kube-public&quot;</span> namespace</span><br><span class="line">[addons] Applied essential addon: kube-dns</span><br><span class="line">[addons] Applied essential addon: kube-proxy</span><br><span class="line"></span><br><span class="line">Your Kubernetes master has initialized successfully!</span><br><span class="line"></span><br><span class="line">To start using your cluster, you need to run the following as a regular user:</span><br><span class="line"></span><br><span class="line">mkdir -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"></span><br><span class="line">You should now deploy a pod network to the cluster.</span><br><span class="line">Run <span class="string">&quot;kubectl apply -f [podnetwork].yaml&quot;</span> with one of the options listed at:</span><br><span class="line">https://kubernetes.io/docs/concepts/cluster-administration/addons/</span><br><span class="line"></span><br><span class="line">You can now join any number of machines by running the following on each node</span><br><span class="line">as root:</span><br><span class="line"></span><br><span class="line">kubeadm join --token 3a9f97.1cd340e0f34adbbb 192.168.119.101:6443 --discovery-token-ca-cert-hash sha256:64111962ff9df5f566d21f5ad5e9d046487aff4553a738f5c6d1ca0fdc4c69b8</span><br></pre></td></tr></table></figure>
+
+<h3 id="用户设置"><a href="#用户设置" class="headerlink" title="用户设置"></a>用户设置</h3><p>拷贝 Kubernetes 的配置文件至当前用户的目录下，使当前用户可以正确使用 kubectl 进行操作。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) <span class="variable">$HOME</span>/.kube/config</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置单节点集群"><a href="#配置单节点集群" class="headerlink" title="配置单节点集群"></a>配置单节点集群</h3><p>默认情况下，master 主节点是不参与工作负载的，如果用户在本地配置的是一个单节点集群，那么需要将 master 主节点同时设置成工作节点，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl taint nodes --all node-role.kubernetes.io/master-</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果想配置多节点的集群，则需要在工作节点安装 kubeadm, kubelet, kubectl 和 docker，然后使用主节点运行 <code>kubeadm init</code> 命令所打印出来的 <code>join</code> 命令来加入集群：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm join --token 3a9f97.1cd340e0f34adbbb 192.168.119.101:6443 --discovery-token-ca-cert-hash sha256:64111962ff9df5f566d21f5ad5e9d046487aff4553a738f5c6d1ca0fdc4c69b8</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="部署附加组件"><a href="#部署附加组件" class="headerlink" title="部署附加组件"></a>部署附加组件</h3><p>安装 Flannel 网络插件和 Dashboard 插件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 Flannel</span></span><br><span class="line">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span><br><span class="line"><span class="comment"># 安装 Dashboard</span></span><br><span class="line">kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml</span><br><span class="line"><span class="comment"># 创建 admin-user 管理员角色</span></span><br><span class="line">kubectl apply -f /path/to/admin-user-role.yaml</span><br></pre></td></tr></table></figure>
+
+<p>admin-user-role.yaml 的定义如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ServiceAccount</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">admin-user</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">rbac.authorization.k8s.io/v1beta1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ClusterRoleBinding</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">admin-user</span></span><br><span class="line"><span class="attr">roleRef:</span></span><br><span class="line">  <span class="attr">apiGroup:</span> <span class="string">rbac.authorization.k8s.io</span></span><br><span class="line">  <span class="attr">kind:</span> <span class="string">ClusterRole</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">cluster-admin</span></span><br><span class="line"><span class="attr">subjects:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">kind:</span> <span class="string">ServiceAccount</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">admin-user</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br></pre></td></tr></table></figure>
+
+<p>使用如下命令获取 admin-user 管理员角色的访问口令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk <span class="string">&#x27;&#123;print $1&#125;&#x27;</span>)</span><br><span class="line"><span class="comment"># 输出如下</span></span><br><span class="line">Name:         admin-user-token-j6rlh</span><br><span class="line">Namespace:    kube-system</span><br><span class="line">Labels:       &lt;none&gt;</span><br><span class="line">Annotations:  kubernetes.io/service-account.name=admin-user</span><br><span class="line">              kubernetes.io/service-account.uid=111eba61-0d3e-11e8-8763-525400ad3b43</span><br><span class="line"></span><br><span class="line">Type:  kubernetes.io/service-account-token</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">ca.crt:     1025 bytes</span><br><span class="line">namespace:  11 bytes</span><br><span class="line">token:      eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLWo2cmxoIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIxMTFlYmE2MS0wZDNlLTExZTgtODc2My01MjU0MDBhZDNiNDMiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1zeXN0ZW06YWRtaW4tdXNlciJ9.qY-6JaTSqpybnhusvOnNkcw7AE1iHGkBZObO62Vo9XZUEK95NlHaaIj7v8kyNLHujpHuVgTYQPyMBvPzU5JONzdEP5U2K5Q_Z3b6f95vWHGwhNO6qdz5EOxK6-_sma61zL2uQpHb637v0ICfwgFRDE_4as0bq2i5vT-dGCv5jvDjmM-b1mjjeXXC6Z7EYLN-DYp38kIzrxFoQkX0_eNd2fIIeKZshthvGmAw5yEr6opkOnbXyEaqgiMOM9ZhVWO6UYseOEgE0GdDnXgoBeYjFXkZ1FDlkyXihNv6tEU5TQCkPt1iUdeOu_dL6OdvaH91wQjeDxeej3qVyvSJaWAjnA</span><br></pre></td></tr></table></figure>
+
+<p>其中 token 值即为对应的授权口令。</p>
+<h3 id="访问-Dashboard"><a href="#访问-Dashboard" class="headerlink" title="访问 Dashboard"></a>访问 Dashboard</h3><p>拷贝 <code>$HOME/.kube/config</code> 文件至主机的某一个目录下，比如 <code>/path/to/kube</code> ，然后使用 <code>kubectl proxy</code> 启动代理，具体命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl --kubeconfig=/path/to/kube/config proxy</span><br><span class="line">Starting to serve on 127.0.0.1:8001</span><br></pre></td></tr></table></figure>
+
+<p>这时，访问 <a target="_blank" rel="noopener" href="http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/">http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/</a> 进入 Dashboard 并使用 上面的 Token（令牌） 进行登录：</p>
+<p><img src="/2018/10/02/install-k8s-using-kubeadm/dashboard-login.png"></p>
+<p>点击<code>登录</code>按钮进入 Dashboard 主页，我们就可以在这里管理 Kubernetes 集群了，Dashboard 主页截图如下所示。</p>
+<p><img src="/2018/10/02/install-k8s-using-kubeadm/dashboard-home.png"></p>
+<h2 id="验证-Kubernetes"><a href="#验证-Kubernetes" class="headerlink" title="验证 Kubernetes"></a>验证 Kubernetes</h2><p>本节将快速地向 Kubernetes 集群部署一个示例应用来验证集群是否工作正常。示例应用取自《Kubernetes 本地快速搭建指南》案例。</p>
+<h3 id="快速部署示例应用"><a href="#快速部署示例应用" class="headerlink" title="快速部署示例应用"></a>快速部署示例应用</h3><p>示例应用的 yaml 定义如下，读者可将其另存为文件 demo.yaml，以供后面使用。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">mysql</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">mysql</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">        <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mysql</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">mysql</span></span><br><span class="line">          <span class="attr">ports:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">3306</span></span><br><span class="line">          <span class="attr">env:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">            <span class="attr">value:</span> <span class="string">&quot;123456&quot;</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">mysql</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">3306</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">mysql</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">myweb</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">selector:</span> </span><br><span class="line">    <span class="attr">app:</span> <span class="string">myweb</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">myweb</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">kubeguide/tomcat-app:v1</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">myweb</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30001</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">myweb</span></span><br></pre></td></tr></table></figure>
+
+<p>使用以下命令部署应用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f /path/to/demo.yaml</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="访问应用主页"><a href="#访问应用主页" class="headerlink" title="访问应用主页"></a>访问应用主页</h3><p>经过以上的步骤，我们的应用就成功地部署在了 Kubernetes 集群上了，我们可以访问 http://&lt;虚拟机 IP&gt;:30001/demo/ 来验证我们的应用了。</p>
+<p><img src="/2018/10/02/install-k8s-using-kubeadm/demo.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+              <a href="/tags/kubeadm/" rel="tag"># kubeadm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2018/10/09/hap-enable-new-language/" rel="next" title="为HAP应用启用新语言支持">
+      为HAP应用启用新语言支持 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80ODg1MC8yNTM0NA=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kubeadm-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">kubeadm 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kubeadm-%E7%89%88%E6%9C%AC"><span class="nav-number">1.2.</span> <span class="nav-text">kubeadm 版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-kubeadm"><span class="nav-number">3.</span> <span class="nav-text">安装 kubeadm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%B8%BB%E6%9C%BA%E5%90%8D%E7%A7%B0"><span class="nav-number">3.1.</span> <span class="nav-text">设置主机名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD-SELinux"><span class="nav-number">3.2.</span> <span class="nav-text">关闭 SELinux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A6%81%E7%94%A8-SWAP"><span class="nav-number">3.3.</span> <span class="nav-text">禁用 SWAP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A6%81%E7%94%A8%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">3.4.</span> <span class="nav-text">禁用防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E5%86%85%E6%A0%B8%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.5.</span> <span class="nav-text">微调内核设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%8C%85"><span class="nav-number">3.6.</span> <span class="nav-text">安装依赖的程序包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85-kubeadm"><span class="nav-number">3.7.</span> <span class="nav-text">离线安装 kubeadm</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-kubeadm"><span class="nav-number">4.</span> <span class="nav-text">启动 kubeadm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-Docker-%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E5%99%A8"><span class="nav-number">4.1.</span> <span class="nav-text">设置 Docker 镜像加速器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-docker-%E5%92%8C-kubelet-%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.2.</span> <span class="nav-text">启动 docker 和 kubelet 服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5-Docker-%E9%95%9C%E5%83%8F"><span class="nav-number">4.3.</span> <span class="nav-text">导入 Docker 镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-kubeadm-1"><span class="nav-number">4.4.</span> <span class="nav-text">启动 kubeadm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.5.</span> <span class="nav-text">用户设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%8D%95%E8%8A%82%E7%82%B9%E9%9B%86%E7%BE%A4"><span class="nav-number">4.6.</span> <span class="nav-text">配置单节点集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E9%99%84%E5%8A%A0%E7%BB%84%E4%BB%B6"><span class="nav-number">4.7.</span> <span class="nav-text">部署附加组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE-Dashboard"><span class="nav-number">4.8.</span> <span class="nav-text">访问 Dashboard</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81-Kubernetes"><span class="nav-number">5.</span> <span class="nav-text">验证 Kubernetes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2%E7%A4%BA%E4%BE%8B%E5%BA%94%E7%94%A8"><span class="nav-number">5.1.</span> <span class="nav-text">快速部署示例应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E5%BA%94%E7%94%A8%E4%B8%BB%E9%A1%B5"><span class="nav-number">5.2.</span> <span class="nav-text">访问应用主页</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="eliu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">eliu</p>
+  <div class="site-description" itemprop="description">楓の葉的技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eliu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eliu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:eliuhy@163.com" title="E-Mail → mailto:eliuhy@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">eliu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v5.4.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

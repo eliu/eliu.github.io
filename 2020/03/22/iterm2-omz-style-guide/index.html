@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eliu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="预期效果本文将介绍结合 iTerm2 和 Oh My Zsh 来美化 macOS 下的显示效果，先放一张最终效果图：  接下来我们来看下针对 iTerms2 终端进行美化的具体步骤。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iTerm2 结合 Oh My Zsh 的主题配置实践">
+<meta property="og:url" content="https://eliu.github.io/2020/03/22/iterm2-omz-style-guide/index.html">
+<meta property="og:site_name" content="楓の葉">
+<meta property="og:description" content="预期效果本文将介绍结合 iTerm2 和 Oh My Zsh 来美化 macOS 下的显示效果，先放一张最终效果图：  接下来我们来看下针对 iTerms2 终端进行美化的具体步骤。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://eliu.github.io/2020/03/22/iterm2-omz-style-guide/image-20200322200414320.png">
+<meta property="og:image" content="https://eliu.github.io/2020/03/22/iterm2-omz-style-guide/image-20200322231555092.png">
+<meta property="article:published_time" content="2020-03-22T11:16:20.000Z">
+<meta property="article:modified_time" content="2020-03-23T15:35:51.003Z">
+<meta property="article:author" content="eliu">
+<meta property="article:tag" content="iterm2">
+<meta property="article:tag" content="on-my-zsh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eliu.github.io/2020/03/22/iterm2-omz-style-guide/image-20200322200414320.png">
+
+<link rel="canonical" href="https://eliu.github.io/2020/03/22/iterm2-omz-style-guide/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>iTerm2 结合 Oh My Zsh 的主题配置实践 | 楓の葉</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">楓の葉</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">花有重开时，人无再少年</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2020/03/22/iterm2-omz-style-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="eliu">
+      <meta itemprop="description" content="楓の葉的技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iTerm2 结合 Oh My Zsh 的主题配置实践
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-22 19:16:20" itemprop="dateCreated datePublished" datetime="2020-03-22T19:16:20+08:00">2020-03-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 23:35:51" itemprop="dateModified" datetime="2020-03-23T23:35:51+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/macOS/" itemprop="url" rel="index"><span itemprop="name">macOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="预期效果"><a href="#预期效果" class="headerlink" title="预期效果"></a>预期效果</h2><p>本文将介绍结合 <code>iTerm2</code> 和 <code>Oh My Zsh</code> 来美化 macOS 下的显示效果，先放一张最终效果图：</p>
+<p><img src="/2020/03/22/iterm2-omz-style-guide/image-20200322200414320.png" alt="image-20200322200414320"></p>
+<p>接下来我们来看下针对 iTerms2 终端进行美化的具体步骤。</p>
+<span id="more"></span>
+
+
+<h2 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h2><h3 id="0x00-下载软件"><a href="#0x00-下载软件" class="headerlink" title="0x00 下载软件"></a>0x00 下载软件</h3><ul>
+<li>iTerm2: <a target="_blank" rel="noopener" href="https://iterm2.com/downloads.html">https://iterm2.com/downloads.html</a></li>
+<li>Oh My Zsh (OMZ): <a target="_blank" rel="noopener" href="https://ohmyz.sh/">https://ohmyz.sh/</a></li>
+</ul>
+<h4 id="安装-OMZ"><a href="#安装-OMZ" class="headerlink" title="安装 OMZ"></a>安装 OMZ</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x01-安装-OMZ-插件"><a href="#0x01-安装-OMZ-插件" class="headerlink" title="0x01 安装 OMZ 插件"></a>0x01 安装 OMZ 插件</h3><h4 id="下载插件"><a href="#下载插件" class="headerlink" title="下载插件"></a>下载插件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载 OMZ 插件 zsh-syntax-highlighting</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md</span></span><br><span class="line">git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 下载 OMZ 插件 zsh-autosuggestions</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md</span></span><br><span class="line">git clone https://github.com/zsh-users/zsh-autosuggestions $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-autosuggestions</span><br></pre></td></tr></table></figure>
+
+<h4 id="启用插件"><a href="#启用插件" class="headerlink" title="启用插件"></a>启用插件</h4><p>打开 <code>$HOME/.zshrc</code> 加入以下脚本内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">  git</span><br><span class="line">  autojump</span><br><span class="line">  osx</span><br><span class="line">  zsh-syntax-highlighting</span><br><span class="line">  zsh-autosuggestions</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x02-安装-Nerd-Fonts"><a href="#0x02-安装-Nerd-Fonts" class="headerlink" title="0x02 安装 Nerd Fonts"></a>0x02 安装 Nerd Fonts</h3><p>整个 Nerd Font 仓库将近 1G 大小，其中 99% 部分都是我们不需要的，因此我们没必要将整个仓库克隆至本地。我这里推荐使用的字体是 Adobe 的 <code>Source Code Pro</code> 和 微软公司的 <code>Cascadia Code</code>。为支持更丰富的显示，Nerd Font 提供了这两个字体的补丁字体（Patched Font），下载地址如下：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf">Sauce Code Pro Nerd Font</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/CascadiaCode/complete/Caskaydia%20Cove%20Regular%20Nerd%20Font%20Complete.ttf">Caskaydia Cove Regular Nerd Font</a></li>
+</ul>
+<h3 id="0x03-配置-iTerm2"><a href="#0x03-配置-iTerm2" class="headerlink" title="0x03 配置 iTerm2"></a>0x03 配置 iTerm2</h3><p><code>⌘</code>+<code>,</code> 打开 iTerm2 的设置界面，选择你当前的配置文件，这里推荐使用 <code>Socialized Dark</code>，之后按照如图所示选择正确的补丁字体，并勾选必要的勾选项：</p>
+<p><img src="/2020/03/22/iterm2-omz-style-guide/image-20200322231555092.png" alt="image-20200322231555092"></p>
+<h3 id="0x04-安装和配置-powerlevel9k-主题"><a href="#0x04-安装和配置-powerlevel9k-主题" class="headerlink" title="0x04 安装和配置 powerlevel9k 主题"></a>0x04 安装和配置 powerlevel9k 主题</h3><p>我们根据<a target="_blank" rel="noopener" href="https://github.com/Powerlevel9k/powerlevel9k/wiki/Install-Instructions#option-2-install-for-oh-my-zsh">官方指引</a>来为 OMZ 安装 powerlevel9k 主题：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k</span></span><br></pre></td></tr></table></figure>
+
+<p>编辑 <code>$HOME/.zshrc</code> 文件，并加入以下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">POWERLEVEL9K_MODE=&#x27;nerdfont-complete&#x27;</span><br><span class="line">POWERLEVEL9K_PROMPT_ON_NEWLINE=true</span><br><span class="line">POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX=&quot;╰▸ &quot;</span><br><span class="line">POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon dir vcs)</span><br><span class="line">ZSH_THEME=&quot;powerlevel9k/powerlevel9k&quot;</span><br></pre></td></tr></table></figure>
+
+<p>具体的参数解释可参见 powerlevel9k 的 <a target="_blank" rel="noopener" href="https://github.com/Powerlevel9k/powerlevel9k/wiki/Stylizing-Your-Prompt">Wiki</a>，最后就会得到文章开头的“预期效果”！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iterm2/" rel="tag"># iterm2</a>
+              <a href="/tags/on-my-zsh/" rel="tag"># on-my-zsh</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/27/node-gyp-rebuild-failed-on-catalina/" rel="prev" title="macOS 下 node-gyp rebuild failed 的解决方法">
+      <i class="fa fa-chevron-left"></i> macOS 下 node-gyp rebuild failed 的解决方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/28/manage-kubeconfig/" rel="next" title="使用 kubectl 管理 kubeconfig 配置文件">
+      使用 kubectl 管理 kubeconfig 配置文件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80ODg1MC8yNTM0NA=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E6%95%88%E6%9E%9C"><span class="nav-number">1.</span> <span class="nav-text">预期效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">具体步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x00-%E4%B8%8B%E8%BD%BD%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">0x00 下载软件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-OMZ"><span class="nav-number">2.1.1.</span> <span class="nav-text">安装 OMZ</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-%E5%AE%89%E8%A3%85-OMZ-%E6%8F%92%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">0x01 安装 OMZ 插件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%8F%92%E4%BB%B6"><span class="nav-number">2.2.1.</span> <span class="nav-text">下载插件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B6"><span class="nav-number">2.2.2.</span> <span class="nav-text">启用插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-%E5%AE%89%E8%A3%85-Nerd-Fonts"><span class="nav-number">2.3.</span> <span class="nav-text">0x02 安装 Nerd Fonts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-%E9%85%8D%E7%BD%AE-iTerm2"><span class="nav-number">2.4.</span> <span class="nav-text">0x03 配置 iTerm2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE-powerlevel9k-%E4%B8%BB%E9%A2%98"><span class="nav-number">2.5.</span> <span class="nav-text">0x04 安装和配置 powerlevel9k 主题</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="eliu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">eliu</p>
+  <div class="site-description" itemprop="description">楓の葉的技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eliu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eliu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:eliuhy@163.com" title="E-Mail → mailto:eliuhy@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">eliu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v5.4.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

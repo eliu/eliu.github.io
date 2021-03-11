@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eliu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言Kubernetes 集群在服务器搭建部署成功之后，通常我们都会通过 kubectl 命令行工具与集群互动、发送操作指令来管理集群。kubectl 主要依赖于集群配置文件 kubeconfig 与集群进行通讯，这个文件通常在 Kubernetes 集群的 master 节点服务器的 $HOME&#x2F;.kube&#x2F;config 目录下。开发者可以从服务器获取改配置文件到开发者本地电脑上的相同目录位置上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 kubectl 管理 kubeconfig 配置文件">
+<meta property="og:url" content="https://eliu.github.io/2020/03/28/manage-kubeconfig/index.html">
+<meta property="og:site_name" content="楓の葉">
+<meta property="og:description" content="前言Kubernetes 集群在服务器搭建部署成功之后，通常我们都会通过 kubectl 命令行工具与集群互动、发送操作指令来管理集群。kubectl 主要依赖于集群配置文件 kubeconfig 与集群进行通讯，这个文件通常在 Kubernetes 集群的 master 节点服务器的 $HOME&#x2F;.kube&#x2F;config 目录下。开发者可以从服务器获取改配置文件到开发者本地电脑上的相同目录位置上">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://eliu.github.io/2020/03/28/manage-kubeconfig/kubeconfig-structure.png">
+<meta property="article:published_time" content="2020-03-28T02:55:12.000Z">
+<meta property="article:modified_time" content="2020-03-28T06:36:42.233Z">
+<meta property="article:author" content="eliu">
+<meta property="article:tag" content="Kubernetes">
+<meta property="article:tag" content="K8S">
+<meta property="article:tag" content="kubeconfig">
+<meta property="article:tag" content="kubectl config">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eliu.github.io/2020/03/28/manage-kubeconfig/kubeconfig-structure.png">
+
+<link rel="canonical" href="https://eliu.github.io/2020/03/28/manage-kubeconfig/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>使用 kubectl 管理 kubeconfig 配置文件 | 楓の葉</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">楓の葉</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">花有重开时，人无再少年</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2020/03/28/manage-kubeconfig/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="eliu">
+      <meta itemprop="description" content="楓の葉的技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用 kubectl 管理 kubeconfig 配置文件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-28 10:55:12 / 修改时间：14:36:42" itemprop="dateCreated datePublished" datetime="2020-03-28T10:55:12+08:00">2020-03-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Kubernetes 集群在服务器搭建部署成功之后，通常我们都会通过 <code>kubectl</code> 命令行工具与集群互动、发送操作指令来管理集群。<code>kubectl</code> 主要依赖于集群配置文件 <code>kubeconfig</code> 与集群进行通讯，这个文件通常在 Kubernetes 集群的 master 节点服务器的 <code>$HOME/.kube/config</code> 目录下。开发者可以从服务器获取改配置文件到开发者本地电脑上的相同目录位置上即可。</p>
+<p>本篇文章主要介绍一下我们如何管理这个配置文件。如果熟悉 <code>kubeconfig</code> 文件的结构，读者当然可以使用文本编辑器自行修改，不过手工修改难免会有错误和不便。所以这里介绍一下如何利用 <code>kubectl</code> 工具来帮助我们管理和调整配置文件。</p>
+<span id="more"></span>
+
+<h2 id="kubeconfig-的结构"><a href="#kubeconfig-的结构" class="headerlink" title="kubeconfig 的结构"></a>kubeconfig 的结构</h2><p>kubeconfig 是一个 Kubernetes 中的一个资源对象，叫做 <code>Config</code> , 内容格式是 YAML 。这个文件中主要包含了集群（clusters）、上下文（contexts）和用户（users）信息，他们的层次结构和关系如下图所示：</p>
+<p><img src="/2020/03/28/manage-kubeconfig/kubeconfig-structure.png" alt="kubeconfig 结构关系图"></p>
+<p>如图所示，上下文 context 是建立集群、用户和命名空间之间关系的桥梁和纽带，我们在本地切换所谓的“环境”其实就是将一个指定的上下文为当前激活的上下文（current-context）。再通俗点讲，这个上下文指的就是你当前是以什么身份（user) 在连接哪个集群（cluster），连接后自动切换到哪一个命名空间（namespace）下。</p>
+<h2 id="kubectl-config"><a href="#kubectl-config" class="headerlink" title="kubectl config"></a>kubectl config</h2><p><code>kubectl</code> 中的 <code>config</code> 子命令可以帮助我们维护存储在本地的配置文件，我们先来看下它的帮助说明：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl config --<span class="built_in">help</span></span></span><br><span class="line">Modify kubeconfig files using subcommands like &quot;kubectl config set current-context my-context&quot;</span><br><span class="line"></span><br><span class="line"> The loading order follows these rules:</span><br><span class="line"></span><br><span class="line">  1.  If the --kubeconfig flag is set, then only that file is loaded. The flag may only be set once and no merging takes</span><br><span class="line">place.</span><br><span class="line">  2.  If $KUBECONFIG environment variable is set, then it is used as a list of paths (normal path delimiting rules for</span><br><span class="line">your system). These paths are merged. When a value is modified, it is modified in the file that defines the stanza. When</span><br><span class="line">a value is created, it is created in the first file that exists. If no files in the chain exist, then it creates the</span><br><span class="line">last file in the list.</span><br><span class="line">  3.  Otherwise, $&#123;HOME&#125;/.kube/config is used and no merging takes place.</span><br><span class="line"></span><br><span class="line">Available Commands:</span><br><span class="line">  current-context Displays the current-context</span><br><span class="line">  delete-cluster  Delete the specified cluster from the kubeconfig</span><br><span class="line">  delete-context  Delete the specified context from the kubeconfig</span><br><span class="line">  get-clusters    Display clusters defined in the kubeconfig</span><br><span class="line">  get-contexts    Describe one or many contexts</span><br><span class="line">  rename-context  Renames a context from the kubeconfig file.</span><br><span class="line">  set             Sets an individual value in a kubeconfig file</span><br><span class="line">  set-cluster     Sets a cluster entry in kubeconfig</span><br><span class="line">  set-context     Sets a context entry in kubeconfig</span><br><span class="line">  set-credentials Sets a user entry in kubeconfig</span><br><span class="line">  unset           Unsets an individual value in a kubeconfig file</span><br><span class="line">  use-context     Sets the current-context in a kubeconfig file</span><br><span class="line">  view            Display merged kubeconfig settings or a specified kubeconfig file</span><br><span class="line"></span><br><span class="line">Usage:</span><br><span class="line">  kubectl config SUBCOMMAND [options]</span><br><span class="line"></span><br><span class="line">Use &quot;kubectl &lt;command&gt; --help&quot; for more information about a given command.</span><br><span class="line">Use &quot;kubectl options&quot; for a list of global command-line options (applies to all commands).</span><br></pre></td></tr></table></figure>
+
+<p>这里简要说明一下config下几个主要的子命令：</p>
+<table>
+<thead>
+<tr>
+<th>子命令</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>current-context</code></td>
+<td>显示当前的上下文名称</td>
+<td></td>
+</tr>
+<tr>
+<td><code>use-context</code></td>
+<td>指定某个上下文为当前激活的上下文</td>
+<td></td>
+</tr>
+<tr>
+<td><code>rename-context</code></td>
+<td>重命名一个上下文</td>
+<td></td>
+</tr>
+<tr>
+<td><code>delete-context</code></td>
+<td>从 kubeconfig 中删除指定的上下文</td>
+<td></td>
+</tr>
+<tr>
+<td><code>delete-cluster</code></td>
+<td>从 kubeconfig 中删除指定的集群</td>
+<td></td>
+</tr>
+<tr>
+<td><code>set</code></td>
+<td>设置 kubeconfig 中一个具体的属性的值</td>
+<td></td>
+</tr>
+<tr>
+<td><code>set-cluster</code></td>
+<td>设置指定集群的属性</td>
+<td></td>
+</tr>
+<tr>
+<td><code>set-context</code></td>
+<td>设置指定上下文的属性</td>
+<td></td>
+</tr>
+<tr>
+<td><code>set-credentials</code></td>
+<td>设置指定用户的属性</td>
+<td>无法删除</td>
+</tr>
+<tr>
+<td><code>unset</code></td>
+<td>删除 kubeconfig 中一个具体的属性的值</td>
+<td>可用于删除</td>
+</tr>
+<tr>
+<td><code>view</code></td>
+<td>输出合并后的kubeconfig的内容，格式为 YAML，密文内容不会显示</td>
+<td></td>
+</tr>
+<tr>
+<td><code>get-clusters</code></td>
+<td>输出所有的集群信息</td>
+<td></td>
+</tr>
+<tr>
+<td><code>get-contexts</code></td>
+<td>输出所有的上下文信息，同时会标记哪一个是当前的上下文</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="常见任务场景"><a href="#常见任务场景" class="headerlink" title="常见任务场景"></a>常见任务场景</h2><p>接下来我们列举一些常见的任务场景。</p>
+<h3 id="0x01-查看当前所有的集群"><a href="#0x01-查看当前所有的集群" class="headerlink" title="0x01 查看当前所有的集群"></a>0x01 查看当前所有的集群</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl config get-clusters</span></span><br><span class="line">NAME</span><br><span class="line">kubernetes</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x02-修改集群服务器地址"><a href="#0x02-修改集群服务器地址" class="headerlink" title="0x02 修改集群服务器地址"></a>0x02 修改集群服务器地址</h3><p>首先我们使用以下命令来看下集群 kubernetes 的 server 属性的值：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl config view -o jsonpath=<span class="string">&#x27;&#123;.clusters[?(@.name == &quot;kubernetes&quot;)].cluster.server&#125;&#x27;</span></span></span><br><span class="line">http://127.0.0.1:8443</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们是用 <code>set-cluster</code> 子命令来修改服务器的地址：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 修改集群服务器地址为 https://192.168.1.10:8443</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config set-cluster kubernetes --server=https://192.168.1.10:8443</span></span><br><span class="line">Cluster &quot;kubernetes&quot; set.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再次查看集群的服务器地址</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config view -o jsonpath=<span class="string">&#x27;&#123;.clusters[?(@.name == &quot;kubernetes&quot;)].cluster.server&#125;&#x27;</span></span></span><br><span class="line">https://192.168.1.10:8443</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x03-删除一个集群"><a href="#0x03-删除一个集群" class="headerlink" title="0x03 删除一个集群"></a>0x03 删除一个集群</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 删除集群 docker-desktop</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config delete-cluster docker-desktop</span></span><br><span class="line">deleted cluster docker-desktop from /Users/eliuhy/.kube/config</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x04-删除一个用户"><a href="#0x04-删除一个用户" class="headerlink" title="0x04 删除一个用户"></a>0x04 删除一个用户</h3><p><code>kubectl config</code> 未直接提供的删除用户的子命令，所以我们找不到类似于 <code>delete-user</code> 之类的选项。不过我们可以使用 <code>unset</code> 子命令来完成这个任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 删除用户 docker-desktop</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config <span class="built_in">unset</span> users.docker-desktop</span></span><br><span class="line">Property &quot;users.docker-desktop&quot; unset.</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x05-查看当前所有的上下文"><a href="#0x05-查看当前所有的上下文" class="headerlink" title="0x05 查看当前所有的上下文"></a>0x05 查看当前所有的上下文</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl config get-contexts</span></span><br><span class="line">CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE</span><br><span class="line">*         kt-connect@kubernetes         kubernetes   kt-connect         default</span><br><span class="line">          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   kube-system</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x06-删除上下文信息"><a href="#0x06-删除上下文信息" class="headerlink" title="0x06 删除上下文信息"></a>0x06 删除上下文信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 删除上下文 docker-desktop</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config delete-context docker-desktop</span></span><br><span class="line">deleted context docker-desktop from /Users/eliuhy/.kube/config</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x07-更新上下文的命名空间"><a href="#0x07-更新上下文的命名空间" class="headerlink" title="0x07 更新上下文的命名空间"></a>0x07 更新上下文的命名空间</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看上下文 kubernetes-admin@kubernetes 的详细信息</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config get-contexts kubernetes-admin@kubernetes</span></span><br><span class="line">CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE</span><br><span class="line">          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   default</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改上下文的命名空间为 kube-system</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config set-context kubernetes-admin@kubernetes --namespace=kube-system</span></span><br><span class="line">Context &quot;kubernetes-admin@kubernetes&quot; modified.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再次查看上下文信息</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config get-contexts kubernetes-admin@kubernetes</span></span><br><span class="line">CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE</span><br><span class="line">          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   kube-system</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x08-修改当前激活的上下文"><a href="#0x08-修改当前激活的上下文" class="headerlink" title="0x08 修改当前激活的上下文"></a>0x08 修改当前激活的上下文</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看当前激活的上下文，CURRENT 列标记星号的为当前激活的上下文</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config get-contexts</span></span><br><span class="line">CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE</span><br><span class="line">*         kt-connect@kubernetes         kubernetes   kt-connect         default</span><br><span class="line">          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   kube-system</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改当前激活的上下文为 kubernetes-admin@kubernetes</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config use-context kubernetes-admin@kubernetes</span></span><br><span class="line">Switched to context &quot;kubernetes-admin@kubernetes&quot;.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 再次确认是否激活成功</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl config get-contexts</span></span><br><span class="line">CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE</span><br><span class="line">          kt-connect@kubernetes         kubernetes   kt-connect         default</span><br><span class="line">*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   kube-system</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>建议大家使用 <code>kubectl config</code> 的方式来配置 <code>kubeconfig</code> 文件，避免了手工修改的麻烦和误配置之外，对于自动化管理也可以更加规范和统一。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+              <a href="/tags/K8S/" rel="tag"># K8S</a>
+              <a href="/tags/kubeconfig/" rel="tag"># kubeconfig</a>
+              <a href="/tags/kubectl-config/" rel="tag"># kubectl config</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/22/iterm2-omz-style-guide/" rel="prev" title="iTerm2 结合 Oh My Zsh 的主题配置实践">
+      <i class="fa fa-chevron-left"></i> iTerm2 结合 Oh My Zsh 的主题配置实践
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/19/self-signed-cert-for-domain/" rel="next" title="为域名快速生成自签名证书">
+      为域名快速生成自签名证书 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80ODg1MC8yNTM0NA=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeconfig-%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">kubeconfig 的结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl-config"><span class="nav-number">3.</span> <span class="nav-text">kubectl config</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E4%BB%BB%E5%8A%A1%E5%9C%BA%E6%99%AF"><span class="nav-number">4.</span> <span class="nav-text">常见任务场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E6%89%80%E6%9C%89%E7%9A%84%E9%9B%86%E7%BE%A4"><span class="nav-number">4.1.</span> <span class="nav-text">0x01 查看当前所有的集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-%E4%BF%AE%E6%94%B9%E9%9B%86%E7%BE%A4%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9C%B0%E5%9D%80"><span class="nav-number">4.2.</span> <span class="nav-text">0x02 修改集群服务器地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E9%9B%86%E7%BE%A4"><span class="nav-number">4.3.</span> <span class="nav-text">0x03 删除一个集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7"><span class="nav-number">4.4.</span> <span class="nav-text">0x04 删除一个用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x05-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E6%89%80%E6%9C%89%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.5.</span> <span class="nav-text">0x05 查看当前所有的上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-%E5%88%A0%E9%99%A4%E4%B8%8A%E4%B8%8B%E6%96%87%E4%BF%A1%E6%81%AF"><span class="nav-number">4.6.</span> <span class="nav-text">0x06 删除上下文信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x07-%E6%9B%B4%E6%96%B0%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">4.7.</span> <span class="nav-text">0x07 更新上下文的命名空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x08-%E4%BF%AE%E6%94%B9%E5%BD%93%E5%89%8D%E6%BF%80%E6%B4%BB%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.8.</span> <span class="nav-text">0x08 修改当前激活的上下文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="eliu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">eliu</p>
+  <div class="site-description" itemprop="description">楓の葉的技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eliu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eliu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:eliuhy@163.com" title="E-Mail → mailto:eliuhy@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">eliu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v5.4.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

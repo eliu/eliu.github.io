@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eliu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="0x00 环境信息在 macOS Catalina 操作系统下（多数是从 High Sierra 升级过来的） 12345678$ sw_versProductName:	Mac OS XProductVersion:	10.15.3BuildVersion:	19D76$ node -vv13.8.0$ npm -v6.13.7">
+<meta property="og:type" content="article">
+<meta property="og:title" content="macOS 下 node-gyp rebuild failed 的解决方法">
+<meta property="og:url" content="https://eliu.github.io/2020/02/27/node-gyp-rebuild-failed-on-catalina/index.html">
+<meta property="og:site_name" content="楓の葉">
+<meta property="og:description" content="0x00 环境信息在 macOS Catalina 操作系统下（多数是从 High Sierra 升级过来的） 12345678$ sw_versProductName:	Mac OS XProductVersion:	10.15.3BuildVersion:	19D76$ node -vv13.8.0$ npm -v6.13.7">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-27T11:36:29.000Z">
+<meta property="article:modified_time" content="2020-03-23T15:37:20.205Z">
+<meta property="article:author" content="eliu">
+<meta property="article:tag" content="macOS Catalina">
+<meta property="article:tag" content="node-gyp rebuild">
+<meta property="article:tag" content="No Xcode or CLT version detected">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://eliu.github.io/2020/02/27/node-gyp-rebuild-failed-on-catalina/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>macOS 下 node-gyp rebuild failed 的解决方法 | 楓の葉</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">楓の葉</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">花有重开时，人无再少年</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2020/02/27/node-gyp-rebuild-failed-on-catalina/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="eliu">
+      <meta itemprop="description" content="楓の葉的技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          macOS 下 node-gyp rebuild failed 的解决方法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-27 19:36:29" itemprop="dateCreated datePublished" datetime="2020-02-27T19:36:29+08:00">2020-02-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 23:37:20" itemprop="dateModified" datetime="2020-03-23T23:37:20+08:00">2020-03-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="0x00-环境信息"><a href="#0x00-环境信息" class="headerlink" title="0x00 环境信息"></a>0x00 环境信息</h2><p>在 macOS Catalina 操作系统下（多数是从 High Sierra 升级过来的）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ sw_vers</span><br><span class="line">ProductName:	Mac OS X</span><br><span class="line">ProductVersion:	10.15.3</span><br><span class="line">BuildVersion:	19D76</span><br><span class="line">$ node -v</span><br><span class="line">v13.8.0</span><br><span class="line">$ npm -v</span><br><span class="line">6.13.7</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="0x01-现象和错误信息"><a href="#0x01-现象和错误信息" class="headerlink" title="0x01 现象和错误信息"></a>0x01 现象和错误信息</h2><p>执行 <code>npm install -g xxxx</code> 或者 <code>yarn</code> 命令的时候出现如下面类似的报错信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&gt; fsevents@1.2.11 install &#x2F;usr&#x2F;local&#x2F;lib&#x2F;node_modules&#x2F;hzero-cli&#x2F;node_modules&#x2F;fork-ts-checker-webpack-plugin-alt&#x2F;node_modules&#x2F;fsevents</span><br><span class="line">&gt; node-gyp rebuild</span><br><span class="line"></span><br><span class="line">No receipt for &#39;com.apple.pkg.CLTools_Executables&#39; found at &#39;&#x2F;&#39;.</span><br><span class="line"></span><br><span class="line">No receipt for &#39;com.apple.pkg.DeveloperToolsCLILeo&#39; found at &#39;&#x2F;&#39;.</span><br><span class="line"></span><br><span class="line">No receipt for &#39;com.apple.pkg.DeveloperToolsCLI&#39; found at &#39;&#x2F;&#39;.</span><br><span class="line"></span><br><span class="line">gyp: No Xcode or CLT version detected!</span><br><span class="line">gyp ERR! configure error</span><br><span class="line">gyp ERR! stack Error: &#96;gyp&#96; failed with exit code: 1</span><br><span class="line">gyp ERR! stack     at ChildProcess.onCpExit (&#x2F;usr&#x2F;local&#x2F;lib&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;node-gyp&#x2F;lib&#x2F;configure.js:351:16)</span><br><span class="line">gyp ERR! stack     at ChildProcess.emit (events.js:321:20)</span><br><span class="line">gyp ERR! stack     at Process.ChildProcess._handle.onexit (internal&#x2F;child_process.js:275:12)</span><br><span class="line">gyp ERR! System Darwin 19.3.0</span><br><span class="line">gyp ERR! command &quot;&#x2F;usr&#x2F;local&#x2F;Cellar&#x2F;node&#x2F;13.8.0&#x2F;bin&#x2F;node&quot; &quot;&#x2F;usr&#x2F;local&#x2F;lib&#x2F;node_modules&#x2F;npm&#x2F;node_modules&#x2F;node-gyp&#x2F;bin&#x2F;node-gyp.js&quot; &quot;rebuild&quot;</span><br><span class="line">gyp ERR! cwd &#x2F;usr&#x2F;local&#x2F;lib&#x2F;node_modules&#x2F;hzero-cli&#x2F;node_modules&#x2F;fork-ts-checker-webpack-plugin-alt&#x2F;node_modules&#x2F;fsevents</span><br><span class="line">gyp ERR! node -v v13.8.0</span><br><span class="line">gyp ERR! node-gyp -v v5.0.7</span><br><span class="line">gyp ERR! not ok</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x02-分析和解决办法"><a href="#0x02-分析和解决办法" class="headerlink" title="0x02 分析和解决办法"></a>0x02 分析和解决办法</h2><p>以上错误大概率是 <code>Xcode Command Line Tools</code> 没有安装或者升级到 <code>macOS Catalina</code> 之后 <code>Xcode Command Line Tools</code> 安装异常所致。 所以接下来我们来检查一下这个命令行工具的安装情况。</p>
+<h3 id="检查-Xcode-命令行工具"><a href="#检查-Xcode-命令行工具" class="headerlink" title="检查 Xcode 命令行工具"></a>检查 Xcode 命令行工具</h3><p>首先，运行以下命令检查命令行工具是否已安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcode-select --install</span><br></pre></td></tr></table></figure>
+
+<p>若返回以下信息，说明已经安装，否则会提示你继续完成这个命令行工具的安装过程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcode-select: error: command line tools are already installed, use &quot;Software Update&quot; to install updates</span><br></pre></td></tr></table></figure>
+
+<p>接下来，运行以下命令来确认已安装的命令行工具是否正常：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/sbin/pkgutil --packages | grep CL</span><br></pre></td></tr></table></figure>
+
+<p>若返回以下信息，则说明以满足 <code>node-gyp</code> 的要求，如果<code>没有返回任何信息</code>，则可判断 Xcode 命令行工具出现了异常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">com.apple.pkg.CLTools_Executables</span><br><span class="line">com.apple.pkg.CLTools_SDK_macOS1015</span><br><span class="line">com.apple.pkg.CLTools_SDK_macOS1014</span><br><span class="line">com.apple.pkg.CLTools_macOS_SDK</span><br></pre></td></tr></table></figure>
+
+<h3 id="修复-Xcode-命令行工具"><a href="#修复-Xcode-命令行工具" class="headerlink" title="修复 Xcode 命令行工具"></a>修复 Xcode 命令行工具</h3><p>若以上检查步骤出现异常情况，则尝试以下步骤重新安装 Xcode 命令行工具，之后重复执行检查的步骤确认有信息返回。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo rm -rf $(xcode-select -print-path)</span><br><span class="line">xcode-select --install</span><br></pre></td></tr></table></figure>
+
+<p>最后重新执行你的 npm 或者 yarn 命令，理论上就可以恢复正常了，如果以上步骤仍无法解决你的问题，请直接打开 <a target="_blank" rel="noopener" href="https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md">https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md</a> 文档详细阅读 <code>node-gyp</code> 的作者所介绍的诊断方法。</p>
+<h2 id="0x03-参考链接"><a href="#0x03-参考链接" class="headerlink" title="0x03 参考链接"></a>0x03 参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/nodejs/node-gyp#on-macos">https://github.com/nodejs/node-gyp#on-macos</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md">https://github.com/nodejs/node-gyp/blob/master/macOS_Catalina.md</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/macOS-Catalina/" rel="tag"># macOS Catalina</a>
+              <a href="/tags/node-gyp-rebuild/" rel="tag"># node-gyp rebuild</a>
+              <a href="/tags/No-Xcode-or-CLT-version-detected/" rel="tag"># No Xcode or CLT version detected</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/10/17/hap-email-account-ssl-setup/" rel="prev" title="HAP SSL 邮件账户设置">
+      <i class="fa fa-chevron-left"></i> HAP SSL 邮件账户设置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/22/iterm2-omz-style-guide/" rel="next" title="iTerm2 结合 Oh My Zsh 的主题配置实践">
+      iTerm2 结合 Oh My Zsh 的主题配置实践 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80ODg1MC8yNTM0NA=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-%E7%8E%AF%E5%A2%83%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">0x00 环境信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E7%8E%B0%E8%B1%A1%E5%92%8C%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">0x01 现象和错误信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E5%88%86%E6%9E%90%E5%92%8C%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">0x02 分析和解决办法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5-Xcode-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="nav-number">3.1.</span> <span class="nav-text">检查 Xcode 命令行工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D-Xcode-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="nav-number">3.2.</span> <span class="nav-text">修复 Xcode 命令行工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">0x03 参考链接</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="eliu"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">eliu</p>
+  <div class="site-description" itemprop="description">楓の葉的技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eliu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eliu" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:eliuhy@163.com" title="E-Mail → mailto:eliuhy@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">eliu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v5.4.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
