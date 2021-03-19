@@ -5,38 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"ka3de.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"eliu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Hexo 简介官网一句话概括就是“快速、简洁且高效的博客框架”，笔者的博客就是使用 Hexo 来搭建的，前期虽然踩过一些坑，但总体用下来看确实很方便。Hexo 社区有丰富的博客模板库和功能插件供用户下载和扩展，接下来就把笔者使用 Hexo 搭建博客的过程介绍一下。">
+  <meta name="description" content="Hexo 简介官网一句话概括就是“快速、简洁且高效的博客框架”，笔者的博客就是使用 Hexo 来搭建的，前期虽然踩过一些坑，但总体用下来看确实很方便。Hexo 社区有丰富的博客模板库和功能插件供用户下载和扩展，接下来就把笔者使用 Hexo 搭建博客的过程介绍一下。 搭建过程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo 快速入门及常见问题">
-<meta property="og:url" content="https://ka3de.gitee.io/blog/2021/03/11/hexo-quickstart/index.html">
+<meta property="og:title" content="Hexo 快速入门">
+<meta property="og:url" content="https://eliu.github.io/2021/03/11/hexo-quickstart/index.html">
 <meta property="og:site_name" content="楓の葉">
-<meta property="og:description" content="Hexo 简介官网一句话概括就是“快速、简洁且高效的博客框架”，笔者的博客就是使用 Hexo 来搭建的，前期虽然踩过一些坑，但总体用下来看确实很方便。Hexo 社区有丰富的博客模板库和功能插件供用户下载和扩展，接下来就把笔者使用 Hexo 搭建博客的过程介绍一下。">
+<meta property="og:description" content="Hexo 简介官网一句话概括就是“快速、简洁且高效的博客框架”，笔者的博客就是使用 Hexo 来搭建的，前期虽然踩过一些坑，但总体用下来看确实很方便。Hexo 社区有丰富的博客模板库和功能插件供用户下载和扩展，接下来就把笔者使用 Hexo 搭建博客的过程介绍一下。 搭建过程">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://ka3de.gitee.io/blog/2021/03/11/hexo-quickstart/image-20210311114700121.png">
+<meta property="og:image" content="https://eliu.github.io/2021/03/11/hexo-quickstart/image-20210311114700121.png">
 <meta property="article:published_time" content="2021-03-11T03:15:35.000Z">
-<meta property="article:modified_time" content="2021-03-11T06:17:01.597Z">
+<meta property="article:modified_time" content="2021-03-19T07:13:45.942Z">
 <meta property="article:author" content="eliu">
 <meta property="article:tag" content="hexo">
 <meta property="article:tag" content="nodejs">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://ka3de.gitee.io/blog/2021/03/11/hexo-quickstart/image-20210311114700121.png">
+<meta name="twitter:image" content="https://eliu.github.io/2021/03/11/hexo-quickstart/image-20210311114700121.png">
 
-<link rel="canonical" href="https://ka3de.gitee.io/blog/2021/03/11/hexo-quickstart/">
+<link rel="canonical" href="https://eliu.github.io/2021/03/11/hexo-quickstart/">
 
 
 <script id="page-configurations">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>Hexo 快速入门及常见问题 | 楓の葉</title>
+  <title>Hexo 快速入门 | 楓の葉</title>
   
 
 
@@ -98,7 +98,7 @@
   <div class="site-meta">
 
     <div>
-      <a href="/blog/" class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">楓の葉</span>
         <span class="logo-line-after"><i></i></span>
@@ -120,22 +120,22 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/blog/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -189,10 +189,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ka3de.gitee.io/blog/2021/03/11/hexo-quickstart/">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2021/03/11/hexo-quickstart/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="eliu">
       <meta itemprop="description" content="楓の葉的技术博客">
     </span>
@@ -202,7 +202,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hexo 快速入门及常见问题
+          Hexo 快速入门
         </h1>
 
         <div class="post-meta">
@@ -211,17 +211,23 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-03-11 11:15:35 / 修改时间：14:17:01" itemprop="dateCreated datePublished" datetime="2021-03-11T11:15:35+08:00">2021-03-11</time>
+              <time title="创建时间：2021-03-11 11:15:35" itemprop="dateCreated datePublished" datetime="2021-03-11T11:15:35+08:00">2021-03-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-19 15:13:45" itemprop="dateModified" datetime="2021-03-19T15:13:45+08:00">2021-03-19</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
+                  <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
                 </span>
             </span>
 
@@ -236,10 +242,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="Hexo-简介"><a href="#Hexo-简介" class="headerlink" title="Hexo 简介"></a><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">Hexo</a> 简介</h3><p>官网一句话概括就是“快速、简洁且高效的博客框架”，笔者的博客就是使用 Hexo 来搭建的，前期虽然踩过一些坑，但总体用下来看确实很方便。Hexo 社区有丰富的博客模板库和功能插件供用户下载和扩展，接下来就把笔者使用 Hexo 搭建博客的过程介绍一下。</p>
-<span id="more"></span>
+        <h2 id="Hexo-简介"><a href="#Hexo-简介" class="headerlink" title="Hexo 简介"></a><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">Hexo</a> 简介</h2><p>官网一句话概括就是“快速、简洁且高效的博客框架”，笔者的博客就是使用 Hexo 来搭建的，前期虽然踩过一些坑，但总体用下来看确实很方便。Hexo 社区有丰富的博客模板库和功能插件供用户下载和扩展，接下来就把笔者使用 Hexo 搭建博客的过程介绍一下。</p>
+<h2 id="搭建过程"><a href="#搭建过程" class="headerlink" title="搭建过程"></a>搭建过程</h2><span id="more"></span>
 
-<h3 id="搭建过程"><a href="#搭建过程" class="headerlink" title="搭建过程"></a>搭建过程</h3><h4 id="安装-hexo-cli"><a href="#安装-hexo-cli" class="headerlink" title="安装 hexo-cli"></a>安装 <code>hexo-cli</code></h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g hexo-cli <span class="comment"># 安装 hexo</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="安装-hexo-cli"><a href="#安装-hexo-cli" class="headerlink" title="安装 hexo-cli"></a>安装 <code>hexo-cli</code></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g hexo-cli <span class="comment"># 安装 hexo</span></span></span><br></pre></td></tr></table></figure>
 
 <h3 id="新建博客项目"><a href="#新建博客项目" class="headerlink" title="新建博客项目"></a>新建博客项目</h3><p>在一个空目录下执行 hexo 初始化命令会触发 hexo 从 GitHub 上下载 Hexo 项目骨架到当前目录下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir myblog</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> myblog</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo init</span></span><br><span class="line">INFO  Cloning hexo-starter https://github.com/hexojs/hexo-starter.git</span><br><span class="line">INFO  Install dependencies</span><br><span class="line">...</span><br><span class="line">INFO  Start blogging with Hexo!</span><br></pre></td></tr></table></figure>
@@ -250,7 +256,7 @@
 <p>此时执行 <code>hexo server</code> 命令会在本地启动博客，访问 <a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000</a> 即可呈现：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo s</span></span><br><span class="line">INFO  Validating config</span><br><span class="line">INFO  Start processing</span><br><span class="line">INFO  Hexo is running at http://localhost:4000 . Press Ctrl+C to stop.</span><br></pre></td></tr></table></figure>
 
-<p><img src="/blog/2021/03/11/hexo-quickstart/image-20210311114700121.png" alt="image-20210311114700121"></p>
+<p><img src="/2021/03/11/hexo-quickstart/image-20210311114700121.png" alt="image-20210311114700121"></p>
 <h3 id="插件安装"><a href="#插件安装" class="headerlink" title="插件安装"></a>插件安装</h3><p>Hexo官方提供了丰富的插件来进行功能增强，读者可以访问 <a target="_blank" rel="noopener" href="https://hexo.io/plugins/">Plugins | Hexo</a> 来详细了解插件详情，这里我们准备安装以下三个插件以支持不同的功能特性，如下：</p>
 <table>
 <thead>
@@ -335,8 +341,19 @@
 <h3 id="推送更新"><a href="#推送更新" class="headerlink" title="推送更新"></a>推送更新</h3><p>目前已验证通过的托管页面有 GitHub Pages 和 Gitee Pages：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo clean    <span class="comment"># 清空之前生成内容</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo generate <span class="comment"># 生成静态页面</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo deploy   <span class="comment"># 推送更新至 Git 仓库</span></span></span><br></pre></td></tr></table></figure>
 
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="cannot-get-categories"><a href="#cannot-get-categories" class="headerlink" title="cannot get /categories/"></a>cannot get /categories/</h3><p>默认情况下， hexo 并未自动为我们生成对应的分类和标签页面，我们可以按照如下方法依次启用分类和标签功能。</p>
+<ol>
+<li><p>新建一个页面，命名为 <code>categories</code> 。命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure></li>
+<li><p>编辑刚新建的页面 (source/categories/index.md)，将页面的类型设置为 <code>categories</code> ，主题将自动为这个页面显示所有分类。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">title: 分类</span><br><span class="line">date: 2014-12-22 12:39:04</span><br><span class="line">type: &quot;categories&quot;</span><br><span class="line">---</span><br></pre></td></tr></table></figure></li>
+<li><p>在菜单中添加链接。编辑主题的 <code>_config.yml</code> ，将 <code>menu</code> 中的 <code>categories: /categories</code> 注释去掉，如下:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">home:</span> <span class="string">/</span></span><br><span class="line">  <span class="attr">categories:</span> <span class="string">/categories</span></span><br><span class="line">  <span class="attr">archives:</span> <span class="string">/archives</span></span><br><span class="line">  <span class="attr">tags:</span> <span class="string">/tags</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>启用标签功能类似，只需要把类型改为 <code>tags</code>。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://liolok.github.io/How-to-Add-Image-to-Hexo-Blog-Post/">How to Add Image to Hexo Blog Post | LIOLOG (liolok.github.io)</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next/wiki/%E5%88%9B%E5%BB%BA%E5%88%86%E7%B1%BB%E9%A1%B5%E9%9D%A2">Tags/Categories 访问 404（hexo-theme-next）</a></li>
 </ul>
 
     </div>
@@ -347,8 +364,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/blog/tags/hexo/" rel="tag"># hexo</a>
-              <a href="/blog/tags/nodejs/" rel="tag"># nodejs</a>
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/nodejs/" rel="tag"># nodejs</a>
           </div>
 
         
@@ -357,10 +374,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2020/12/30/git-log-to-markdown/" rel="prev" title="如何生成 Markdown 格式的 Git 日志">
+    <a href="/2020/12/30/git-log-to-markdown/" rel="prev" title="如何生成 Markdown 格式的 Git 日志">
       <i class="fa fa-chevron-left"></i> 如何生成 Markdown 格式的 Git 日志
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/19/Play-Windows-Classic-Games-on-macOS/" rel="next" title="使用 Wine 在 macOS 上运行经典的 Windows 游戏">
+      使用 Wine 在 macOS 上运行经典的 Windows 游戏 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -425,36 +445,36 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hexo-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Hexo 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">搭建过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-cli"><span class="nav-number">2.1.</span> <span class="nav-text">安装 hexo-cli</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA%E5%8D%9A%E5%AE%A2%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.</span> <span class="nav-text">新建博客项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text">插件安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%8D%9A%E5%AE%A2"><span class="nav-number">5.</span> <span class="nav-text">配置博客</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0"><span class="nav-number">6.</span> <span class="nav-text">编写博客文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E9%80%81%E6%9B%B4%E6%96%B0"><span class="nav-number">7.</span> <span class="nav-text">推送更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Hexo 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">搭建过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-cli"><span class="nav-number">2.1.</span> <span class="nav-text">安装 hexo-cli</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA%E5%8D%9A%E5%AE%A2%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.2.</span> <span class="nav-text">新建博客项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-number">2.3.</span> <span class="nav-text">插件安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%8D%9A%E5%AE%A2"><span class="nav-number">2.4.</span> <span class="nav-text">配置博客</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0"><span class="nav-number">2.5.</span> <span class="nav-text">编写博客文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E9%80%81%E6%9B%B4%E6%96%B0"><span class="nav-number">2.6.</span> <span class="nav-text">推送更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cannot-get-categories"><span class="nav-number">3.1.</span> <span class="nav-text">cannot get &#x2F;categories&#x2F;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="eliu"
-      src="/blog/images/avatar.jpg">
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">eliu</p>
   <div class="site-description" itemprop="description">楓の葉的技术博客</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/blog/tags/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -513,30 +533,30 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
-
-
-  
+<script src="/js/next-boot.js"></script>
 
 
 
 
   
-<script src="/blog/js/local-search.js"></script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 
