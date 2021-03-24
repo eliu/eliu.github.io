@@ -5,29 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"ka3de.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"eliu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="前言Kubernetes 集群在服务器搭建部署成功之后，通常我们都会通过 kubectl 命令行工具与集群互动、发送操作指令来管理集群。kubectl 主要依赖于集群配置文件 kubeconfig 与集群进行通讯，这个文件通常在 Kubernetes 集群的 master 节点服务器的 $HOME&#x2F;.kube&#x2F;config 目录下。开发者可以从服务器获取改配置文件到开发者本地电脑上的相同目录位置上">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 kubectl 管理 kubeconfig 配置文件">
-<meta property="og:url" content="https://ka3de.gitee.io/blog/2020/03/28/manage-kubeconfig/index.html">
+<meta property="og:url" content="https://eliu.github.io/2020/03/28/manage-kubeconfig/index.html">
 <meta property="og:site_name" content="楓の葉">
 <meta property="og:description" content="前言Kubernetes 集群在服务器搭建部署成功之后，通常我们都会通过 kubectl 命令行工具与集群互动、发送操作指令来管理集群。kubectl 主要依赖于集群配置文件 kubeconfig 与集群进行通讯，这个文件通常在 Kubernetes 集群的 master 节点服务器的 $HOME&#x2F;.kube&#x2F;config 目录下。开发者可以从服务器获取改配置文件到开发者本地电脑上的相同目录位置上">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://ka3de.gitee.io/blog/2020/03/28/manage-kubeconfig/kubeconfig-structure.png">
+<meta property="og:image" content="https://eliu.github.io/2020/03/28/manage-kubeconfig/kubeconfig-structure.png">
 <meta property="article:published_time" content="2020-03-28T02:55:12.000Z">
 <meta property="article:modified_time" content="2020-03-28T06:36:42.233Z">
 <meta property="article:author" content="eliu">
@@ -36,9 +36,9 @@
 <meta property="article:tag" content="kubeconfig">
 <meta property="article:tag" content="kubectl config">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://ka3de.gitee.io/blog/2020/03/28/manage-kubeconfig/kubeconfig-structure.png">
+<meta name="twitter:image" content="https://eliu.github.io/2020/03/28/manage-kubeconfig/kubeconfig-structure.png">
 
-<link rel="canonical" href="https://ka3de.gitee.io/blog/2020/03/28/manage-kubeconfig/">
+<link rel="canonical" href="https://eliu.github.io/2020/03/28/manage-kubeconfig/">
 
 
 <script id="page-configurations">
@@ -100,7 +100,7 @@
   <div class="site-meta">
 
     <div>
-      <a href="/blog/" class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">楓の葉</span>
         <span class="logo-line-after"><i></i></span>
@@ -122,22 +122,22 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/blog/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -191,10 +191,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ka3de.gitee.io/blog/2020/03/28/manage-kubeconfig/">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2020/03/28/manage-kubeconfig/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="eliu">
       <meta itemprop="description" content="楓の葉的技术博客">
     </span>
@@ -223,7 +223,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+                  <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
                 </span>
             </span>
 
@@ -243,7 +243,7 @@
 <span id="more"></span>
 
 <h2 id="kubeconfig-的结构"><a href="#kubeconfig-的结构" class="headerlink" title="kubeconfig 的结构"></a>kubeconfig 的结构</h2><p>kubeconfig 是一个 Kubernetes 中的一个资源对象，叫做 <code>Config</code> , 内容格式是 YAML 。这个文件中主要包含了集群（clusters）、上下文（contexts）和用户（users）信息，他们的层次结构和关系如下图所示：</p>
-<p><img src="/blog/2020/03/28/manage-kubeconfig/kubeconfig-structure.png" alt="kubeconfig 结构关系图"></p>
+<p><img src="/2020/03/28/manage-kubeconfig/kubeconfig-structure.png" alt="kubeconfig 结构关系图"></p>
 <p>如图所示，上下文 context 是建立集群、用户和命名空间之间关系的桥梁和纽带，我们在本地切换所谓的“环境”其实就是将一个指定的上下文为当前激活的上下文（current-context）。再通俗点讲，这个上下文指的就是你当前是以什么身份（user) 在连接哪个集群（cluster），连接后自动切换到哪一个命名空间（namespace）下。</p>
 <h2 id="kubectl-config"><a href="#kubectl-config" class="headerlink" title="kubectl config"></a>kubectl config</h2><p><code>kubectl</code> 中的 <code>config</code> 子命令可以帮助我们维护存储在本地的配置文件，我们先来看下它的帮助说明：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl config --<span class="built_in">help</span></span></span><br><span class="line">Modify kubeconfig files using subcommands like &quot;kubectl config set current-context my-context&quot;</span><br><span class="line"></span><br><span class="line"> The loading order follows these rules:</span><br><span class="line"></span><br><span class="line">  1.  If the --kubeconfig flag is set, then only that file is loaded. The flag may only be set once and no merging takes</span><br><span class="line">place.</span><br><span class="line">  2.  If $KUBECONFIG environment variable is set, then it is used as a list of paths (normal path delimiting rules for</span><br><span class="line">your system). These paths are merged. When a value is modified, it is modified in the file that defines the stanza. When</span><br><span class="line">a value is created, it is created in the first file that exists. If no files in the chain exist, then it creates the</span><br><span class="line">last file in the list.</span><br><span class="line">  3.  Otherwise, $&#123;HOME&#125;/.kube/config is used and no merging takes place.</span><br><span class="line"></span><br><span class="line">Available Commands:</span><br><span class="line">  current-context Displays the current-context</span><br><span class="line">  delete-cluster  Delete the specified cluster from the kubeconfig</span><br><span class="line">  delete-context  Delete the specified context from the kubeconfig</span><br><span class="line">  get-clusters    Display clusters defined in the kubeconfig</span><br><span class="line">  get-contexts    Describe one or many contexts</span><br><span class="line">  rename-context  Renames a context from the kubeconfig file.</span><br><span class="line">  set             Sets an individual value in a kubeconfig file</span><br><span class="line">  set-cluster     Sets a cluster entry in kubeconfig</span><br><span class="line">  set-context     Sets a context entry in kubeconfig</span><br><span class="line">  set-credentials Sets a user entry in kubeconfig</span><br><span class="line">  unset           Unsets an individual value in a kubeconfig file</span><br><span class="line">  use-context     Sets the current-context in a kubeconfig file</span><br><span class="line">  view            Display merged kubeconfig settings or a specified kubeconfig file</span><br><span class="line"></span><br><span class="line">Usage:</span><br><span class="line">  kubectl config SUBCOMMAND [options]</span><br><span class="line"></span><br><span class="line">Use &quot;kubectl &lt;command&gt; --help&quot; for more information about a given command.</span><br><span class="line">Use &quot;kubectl options&quot; for a list of global command-line options (applies to all commands).</span><br></pre></td></tr></table></figure>
@@ -371,10 +371,10 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/blog/tags/Kubernetes/" rel="tag"># Kubernetes</a>
-              <a href="/blog/tags/K8S/" rel="tag"># K8S</a>
-              <a href="/blog/tags/kubeconfig/" rel="tag"># kubeconfig</a>
-              <a href="/blog/tags/kubectl-config/" rel="tag"># kubectl config</a>
+              <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+              <a href="/tags/K8S/" rel="tag"># K8S</a>
+              <a href="/tags/kubeconfig/" rel="tag"># kubeconfig</a>
+              <a href="/tags/kubectl-config/" rel="tag"># kubectl config</a>
           </div>
 
         
@@ -383,11 +383,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2020/03/22/iterm2-omz-style-guide/" rel="prev" title="iTerm2 结合 Oh My Zsh 的主题配置实践">
+    <a href="/2020/03/22/iterm2-omz-style-guide/" rel="prev" title="iTerm2 结合 Oh My Zsh 的主题配置实践">
       <i class="fa fa-chevron-left"></i> iTerm2 结合 Oh My Zsh 的主题配置实践
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2020/05/19/self-signed-cert-for-domain/" rel="next" title="为域名快速生成自签名证书">
+    <a href="/2020/05/19/self-signed-cert-for-domain/" rel="next" title="为域名快速生成自签名证书">
       为域名快速生成自签名证书 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -461,29 +461,29 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="eliu"
-      src="/blog/images/avatar.jpg">
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">eliu</p>
   <div class="site-description" itemprop="description">楓の葉的技术博客</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/blog/tags/">
+            <a href="/tags/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -542,30 +542,30 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
-
-
-  
+<script src="/js/next-boot.js"></script>
 
 
 
 
   
-<script src="/blog/js/local-search.js"></script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 
