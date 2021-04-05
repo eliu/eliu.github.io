@@ -5,40 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"ka3de.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"eliu.github.io","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="写在前面笔者作为80后，至今仍然对于青春时代曾经伴随着我们的经典游戏念念不忘。暗黑破坏神、魔兽争霸、重返德军总部。。。那毕竟是我们这一代的青春。即使我现在玩不动了，但笔记本电脑中依然保留着这些游戏，偶尔玩一下怀念怀念也好。 我的笔记本现在已经换成 MacBook Pro，运行着 macOS Catalina 操作系统，曾经的经典游戏常规的方法依然无法继续运行了。当然你可能会说，安装一个虚拟机系统，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 Wine 在 macOS 上运行经典的 Windows 游戏">
-<meta property="og:url" content="https://ka3de.gitee.io/blog/2021/03/19/Play-Windows-Classic-Games-on-macOS/index.html">
+<meta property="og:url" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/index.html">
 <meta property="og:site_name" content="楓の葉">
 <meta property="og:description" content="写在前面笔者作为80后，至今仍然对于青春时代曾经伴随着我们的经典游戏念念不忘。暗黑破坏神、魔兽争霸、重返德军总部。。。那毕竟是我们这一代的青春。即使我现在玩不动了，但笔记本电脑中依然保留着这些游戏，偶尔玩一下怀念怀念也好。 我的笔记本现在已经换成 MacBook Pro，运行着 macOS Catalina 操作系统，曾经的经典游戏常规的方法依然无法继续运行了。当然你可能会说，安装一个虚拟机系统，">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://ka3de.gitee.io/blog/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png">
-<meta property="og:image" content="https://ka3de.gitee.io/blog/2021/03/19/Play-Windows-Classic-Games-on-macOS/regedit.png">
+<meta property="og:image" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png">
+<meta property="og:image" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/regedit.png">
 <meta property="article:published_time" content="2021-03-19T06:31:56.000Z">
-<meta property="article:modified_time" content="2021-03-23T02:49:33.549Z">
+<meta property="article:modified_time" content="2021-04-05T12:27:41.071Z">
 <meta property="article:author" content="eliu">
 <meta property="article:tag" content="wine">
 <meta property="article:tag" content="macOS">
 <meta property="article:tag" content="Diablo II">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://ka3de.gitee.io/blog/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png">
+<meta name="twitter:image" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png">
 
-<link rel="canonical" href="https://ka3de.gitee.io/blog/2021/03/19/Play-Windows-Classic-Games-on-macOS/">
+<link rel="canonical" href="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/">
 
 
 <script id="page-configurations">
@@ -100,7 +100,7 @@
   <div class="site-meta">
 
     <div>
-      <a href="/blog/" class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">楓の葉</span>
         <span class="logo-line-after"><i></i></span>
@@ -122,22 +122,22 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/blog/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/blog/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -191,10 +191,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ka3de.gitee.io/blog/2021/03/19/Play-Windows-Classic-Games-on-macOS/">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="eliu">
       <meta itemprop="description" content="楓の葉的技术博客">
     </span>
@@ -221,7 +221,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-23 10:49:33" itemprop="dateModified" datetime="2021-03-23T10:49:33+08:00">2021-03-23</time>
+                <time title="修改时间：2021-04-05 20:27:41" itemprop="dateModified" datetime="2021-04-05T20:27:41+08:00">2021-04-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -229,7 +229,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/Classic-Games/" itemprop="url" rel="index"><span itemprop="name">Classic Games</span></a>
+                  <a href="/categories/Classic-Games/" itemprop="url" rel="index"><span itemprop="name">Classic Games</span></a>
                 </span>
             </span>
 
@@ -285,7 +285,7 @@
 </tr>
 </tbody></table>
 <p>配置窗口截图如下所示：</p>
-<p><img src="/blog/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png" alt="winecfg"></p>
+<p><img src="/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png" alt="winecfg"></p>
 <p>设置完成之后，点击 <code>OK</code> 按钮保存设置，此时 Wine 的主目录 <code>$HOME/.wine</code> 的目录结构看起来是这样的：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── dosdevices</span><br><span class="line">│   ├── c: -&gt; ..&#x2F;drive_c</span><br><span class="line">│   └── z: -&gt; &#x2F;</span><br><span class="line">├── drive_c</span><br><span class="line">│   ├── Program Files</span><br><span class="line">│   ├── ProgramData</span><br><span class="line">│   ├── users</span><br><span class="line">│   └── windows</span><br><span class="line">├── system.reg</span><br><span class="line">├── user.reg</span><br><span class="line">└── userdef.reg</span><br></pre></td></tr></table></figure>
 
@@ -293,12 +293,14 @@
 <h3 id="2-解决中文乱码"><a href="#2-解决中文乱码" class="headerlink" title="2. 解决中文乱码"></a>2. 解决中文乱码</h3><p>在终端的 shell 配置文件中为 <code>wine</code> 添加别名：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias wine=&quot;env LC_ALL=zh_CN.UTF-8 wine&quot;</span><br></pre></td></tr></table></figure>
 
-<h3 id="3-配置暗黑破坏神II"><a href="#3-配置暗黑破坏神II" class="headerlink" title="3. 配置暗黑破坏神II"></a>3. 配置<code>暗黑破坏神II</code></h3><p>我们以 Diablo II 为例来进行说明，首先进入目录 <code>$HOME/.wine/drive_c</code> ，然后新建目录 <code>games</code>：</p>
+<h3 id="3-环境变量配置"><a href="#3-环境变量配置" class="headerlink" title="3. 环境变量配置"></a>3. 环境变量配置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Fix error `terminals database is inaccessible` <span class="keyword">for</span> Wine Crossover 20.x</span></span><br><span class="line">export TERMINFO=/usr/share/terminfo</span><br><span class="line"><span class="meta">#</span><span class="bash"> 禁止在终端输出所有调试信息</span></span><br><span class="line">export WINEDEBUG=-all</span><br><span class="line"><span class="meta">#</span><span class="bash"> Wine 主目录</span></span><br><span class="line">export WINEPREFIX=~/.wine</span><br><span class="line"><span class="meta">#</span><span class="bash"> 运行 32 位的 Windows</span></span><br><span class="line">export WINEARCH=win32</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-配置暗黑破坏神II"><a href="#4-配置暗黑破坏神II" class="headerlink" title="4. 配置暗黑破坏神II"></a>4. 配置<code>暗黑破坏神II</code></h3><p>我们以 Diablo II 为例来进行说明，首先进入目录 <code>$HOME/.wine/drive_c</code> ，然后新建目录 <code>games</code>：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$HOME</span>/.wine/drive_c</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir games</span></span><br></pre></td></tr></table></figure>
 
 <p>之后，下载免安装版的 Diablo II 游戏到 <code>$HOME/.wine/drive_c/games/Diablo II</code>，相信你可以很容易下载到的 :)</p>
 <p>然后打开注册表，增加注册表项 <code>KEY_CURRENT_USER\Software\Blizzard Entertainment\Diablo II\VideoConfig</code> 并设置该项的类型为 REG_DWORD，值为 <code>0</code>：</p>
-<p><img src="/blog/2021/03/19/Play-Windows-Classic-Games-on-macOS/regedit.png" alt="regedit"></p>
+<p><img src="/2021/03/19/Play-Windows-Classic-Games-on-macOS/regedit.png" alt="regedit"></p>
 <p>在终端启动 Diablo II：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">alias</span> d2=<span class="string">&quot;cd <span class="variable">$HOME</span>/.wine/drive_c/games/Diablo\ II &amp;&amp; wine Game.exe -w -direct -txt&quot;</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> d2</span></span><br></pre></td></tr></table></figure>
 
@@ -311,12 +313,14 @@
 <li>街机模拟器fbaxp</li>
 </ul>
 <h2 id="附录：终端环境配置汇总"><a href="#附录：终端环境配置汇总" class="headerlink" title="附录：终端环境配置汇总"></a>附录：终端环境配置汇总</h2><p><code>$HOME/.zshrc</code> 或者 <code>$HOME/.bashrc</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">export WINEPREFIX=~/.wine</span><br><span class="line">export WINEARCH=win32</span><br><span class="line">export WINEGAMEHOME=&quot;$WINEPREFIX/drive_c/games&quot;</span><br><span class="line">alias wine=&quot;env LC_ALL=zh_CN.UTF-8 wine&quot;</span><br><span class="line">alias d2=&quot;cd $WINEGAMEHOME/Diablo\ II &amp;&amp; wine Game.exe -direct -txt&quot;</span><br><span class="line">alias rtcw=&quot;cd $WINEGAMEHOME/RealRTCW/Return\ to\ Castle\ Wolfenstein &amp;&amp; wine RealRTCW.x86.exe&quot;</span><br><span class="line">alias fba=&quot;cd $WINEGAMEHOME/fba &amp;&amp; wine fbaxp.exe&quot;</span><br><span class="line">alias pal4=&quot;cd $WINEGAMEHOME/PAL4 &amp;&amp; wine PAL4.exe&quot;</span><br><span class="line">alias pal4cfg=&quot;cd $WINEGAMEHOME/PAL4 &amp;&amp; wine Config.exe&quot;</span><br><span class="line">alias war3=&quot;cd $WINEGAMEHOME/Warcraft\ III &amp;&amp; wine Frozen\ Throne.exe&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Fix error `terminals database is inaccessible` <span class="keyword">for</span> Wine Crossover 20.x</span></span><br><span class="line">export TERMINFO=/usr/share/terminfo</span><br><span class="line"><span class="meta">#</span><span class="bash"> 禁止在终端输出所有调试信息</span></span><br><span class="line">export WINEDEBUG=-all</span><br><span class="line"><span class="meta">#</span><span class="bash"> Wine 主目录</span></span><br><span class="line">export WINEPREFIX=~/.wine</span><br><span class="line"><span class="meta">#</span><span class="bash"> 运行 32 位的 Windows</span></span><br><span class="line">export WINEARCH=win32</span><br><span class="line">export WINEGAMEHOME=&quot;$WINEPREFIX/drive_c/games&quot;</span><br><span class="line">alias wine=&quot;env LC_ALL=zh_CN.UTF-8 wine&quot;</span><br><span class="line">alias d2=&quot;cd $WINEGAMEHOME/Diablo\ II &amp;&amp; wine Game.exe -direct -txt&quot;</span><br><span class="line">alias rtcw=&quot;cd $WINEGAMEHOME/RealRTCW/Return\ to\ Castle\ Wolfenstein &amp;&amp; wine RealRTCW.x86.exe&quot;</span><br><span class="line">alias fba=&quot;cd $WINEGAMEHOME/fba &amp;&amp; wine fbaxp.exe&quot;</span><br><span class="line">alias pal4=&quot;cd $WINEGAMEHOME/PAL4 &amp;&amp; wine PAL4.exe&quot;</span><br><span class="line">alias pal4cfg=&quot;cd $WINEGAMEHOME/PAL4 &amp;&amp; wine Config.exe&quot;</span><br><span class="line">alias war3=&quot;cd $WINEGAMEHOME/Warcraft\ III &amp;&amp; wine Frozen\ Throne.exe&quot;</span><br></pre></td></tr></table></figure>
 
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://github.com/whipowill/d2-plugy-qol/blob/master/Guides/MacOSX.md">D2QOL | Mac OSX</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/whipowill/d2-plugy-qol/blob/master/Guides/Video.md">D2QOL | Video</a></li>
 <li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Y1575071736/article/details/91356917">macOS Mojave下解决wine中文乱码问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29695701/article/details/90715653">terminals database is inaccessible 解决办法 | CSDN</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.winehq.org/Debug_Channels">Debug Channels - WineHQ Wiki</a></li>
 </ul>
 
     </div>
@@ -327,9 +331,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/blog/tags/wine/" rel="tag"># wine</a>
-              <a href="/blog/tags/macOS/" rel="tag"># macOS</a>
-              <a href="/blog/tags/Diablo-II/" rel="tag"># Diablo II</a>
+              <a href="/tags/wine/" rel="tag"># wine</a>
+              <a href="/tags/macOS/" rel="tag"># macOS</a>
+              <a href="/tags/Diablo-II/" rel="tag"># Diablo II</a>
           </div>
 
         
@@ -338,11 +342,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/03/11/hexo-quickstart/" rel="prev" title="Hexo 快速入门">
+    <a href="/2021/03/11/hexo-quickstart/" rel="prev" title="Hexo 快速入门">
       <i class="fa fa-chevron-left"></i> Hexo 快速入门
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/03/24/run-local-k8s-using-kind/" rel="next" title="使用 kind 在本地运行 k8s">
+    <a href="/2021/03/24/run-local-k8s-using-kind/" rel="next" title="使用 kind 在本地运行 k8s">
       使用 kind 在本地运行 k8s <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -409,34 +413,34 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Wine-%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">Wine 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#macOS-%E4%B8%8B%E5%AE%89%E8%A3%85-Wine"><span class="nav-number">3.</span> <span class="nav-text">macOS 下安装 Wine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-Wine"><span class="nav-number">4.</span> <span class="nav-text">配置 Wine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96-Wine"><span class="nav-number">4.1.</span> <span class="nav-text">1. 初始化 Wine</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E5%86%B3%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text">2. 解决中文乱码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E6%9A%97%E9%BB%91%E7%A0%B4%E5%9D%8F%E7%A5%9EII"><span class="nav-number">4.3.</span> <span class="nav-text">3. 配置暗黑破坏神II</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%B1%87%E6%80%BB"><span class="nav-number">5.</span> <span class="nav-text">附录：终端环境配置汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Wine-%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">Wine 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#macOS-%E4%B8%8B%E5%AE%89%E8%A3%85-Wine"><span class="nav-number">3.</span> <span class="nav-text">macOS 下安装 Wine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-Wine"><span class="nav-number">4.</span> <span class="nav-text">配置 Wine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96-Wine"><span class="nav-number">4.1.</span> <span class="nav-text">1. 初始化 Wine</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E5%86%B3%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text">2. 解决中文乱码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE"><span class="nav-number">4.3.</span> <span class="nav-text">3. 环境变量配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AE%E6%9A%97%E9%BB%91%E7%A0%B4%E5%9D%8F%E7%A5%9EII"><span class="nav-number">4.4.</span> <span class="nav-text">4. 配置暗黑破坏神II</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%B1%87%E6%80%BB"><span class="nav-number">5.</span> <span class="nav-text">附录：终端环境配置汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="eliu"
-      src="/blog/images/avatar.jpg">
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">eliu</p>
   <div class="site-description" itemprop="description">楓の葉的技术博客</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
           
         <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/blog/tags/">
+            <a href="/tags/">
           
         <span class="site-state-item-count">33</span>
         <span class="site-state-item-name">标签</span></a>
@@ -497,30 +501,30 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
-
-
-  
+<script src="/js/next-boot.js"></script>
 
 
 
 
   
-<script src="/blog/js/local-search.js"></script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 
