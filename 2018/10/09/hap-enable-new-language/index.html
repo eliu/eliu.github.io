@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"eliu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"a11y-light","dark":"a11y-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="HAP 简介汉得应用开发平台（HAND Application Platform）是汉得公司为了应对移动互联网化、应用云端化、海量数据化和数字化服务转型的应用开发平台，是中台化产品和应用开发的基础平台。HAP采用开源的Java EE技术体系，平台设计灵活可扩展、可移植、可应对高并发需求。  更多信息请访问：http:&#x2F;&#x2F;eco.hand-china.com&#x2F;platform&#x2F;hap.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为HAP应用启用新语言支持">
+<meta property="og:url" content="https://eliu.github.io/2018/10/09/hap-enable-new-language/index.html">
+<meta property="og:site_name" content="楓の葉">
+<meta property="og:description" content="HAP 简介汉得应用开发平台（HAND Application Platform）是汉得公司为了应对移动互联网化、应用云端化、海量数据化和数字化服务转型的应用开发平台，是中台化产品和应用开发的基础平台。HAP采用开源的Java EE技术体系，平台设计灵活可扩展、可移植、可应对高并发需求。  更多信息请访问：http:&#x2F;&#x2F;eco.hand-china.com&#x2F;platform&#x2F;hap.html">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://eliu.github.io/2018/10/09/hap-enable-new-language/image-20181009103555564.png">
+<meta property="article:published_time" content="2018-10-09T02:16:00.000Z">
+<meta property="article:modified_time" content="2025-09-30T01:54:53.624Z">
+<meta property="article:author" content="eliu">
+<meta property="article:tag" content="i18n">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eliu.github.io/2018/10/09/hap-enable-new-language/image-20181009103555564.png">
+
+
+<link rel="canonical" href="https://eliu.github.io/2018/10/09/hap-enable-new-language/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://eliu.github.io/2018/10/09/hap-enable-new-language/","path":"2018/10/09/hap-enable-new-language/","title":"为HAP应用启用新语言支持"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>为HAP应用启用新语言支持 | 楓の葉</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script><script src="/js/pjax.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">楓の葉</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">花有重开时，人无再少年</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HAP-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">HAP 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E7%94%A8%E6%96%B0%E8%AF%AD%E8%A8%80"><span class="nav-number">2.</span> <span class="nav-text">启用新语言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%9A%E4%B9%89%E8%AF%AD%E8%A8%80%E4%BB%A3%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">1. 定义语言代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%80%82%E9%85%8D-KendoUI-%E5%9B%BD%E9%99%85%E5%8C%96%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">2. 适配 KendoUI 国际化资源文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%B0%E5%BD%95"><span class="nav-number">2.3.</span> <span class="nav-text">3. 更新数据库记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%BA%BA%E5%B7%A5%E7%BF%BB%E8%AF%91"><span class="nav-number">2.4.</span> <span class="nav-text">4. 人工翻译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%B8%85%E7%BC%93%E5%AD%98%E5%B9%B6%E9%87%8D%E5%90%AF%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.5.</span> <span class="nav-text">5. 清缓存并重启服务器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="eliu"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">eliu</p>
+  <div class="site-description" itemprop="description">楓の葉的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eliu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eliu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:eliuhy@163.com" title="E-Mail → mailto:eliuhy@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2018/10/09/hap-enable-new-language/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="eliu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+      <meta itemprop="description" content="楓の葉的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="为HAP应用启用新语言支持 | 楓の葉">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          为HAP应用启用新语言支持
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-10-09 10:16:00" itemprop="dateCreated datePublished" datetime="2018-10-09T10:16:00+08:00">2018-10-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-09-30 09:54:53" itemprop="dateModified" datetime="2025-09-30T09:54:53+08:00">2025-09-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/HAP/" itemprop="url" rel="index"><span itemprop="name">HAP</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="为HAP应用启用新语言支持" href="/2018/10/09/hap-enable-new-language/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::6505eb7b7b45f0b17670f681be94cc30" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="HAP-简介"><a href="#HAP-简介" class="headerlink" title="HAP 简介"></a>HAP 简介</h2><p>汉得应用开发平台（HAND Application Platform）是汉得公司为了应对移动互联网化、应用云端化、海量数据化和数字化服务转型的应用开发平台，是中台化产品和应用开发的基础平台。HAP采用开源的Java EE技术体系，平台设计灵活可扩展、可移植、可应对高并发需求。</p>
+<blockquote>
+<p>更多信息请访问：<a target="_blank" rel="noopener" href="http://eco.hand-china.com/platform/hap.html">http://eco.hand-china.com/platform/hap.html</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="启用新语言"><a href="#启用新语言" class="headerlink" title="启用新语言"></a>启用新语言</h2><p>HAP 应用开发平台默认支持简体中文和英语两种语言，如果要启用新的语言支持，比如西班牙语，则需要找到所有国际化相关的前后端对象进行翻译。</p>
+<p>幸运的是，HAP 应用开发平台对国际化提供了良好的框架支持和开发规范，所以涉及到和多语言或者国际化相关的数据表和其他资源对象的分布相对集中且有规律可循，具体分三部分：</p>
+<ol>
+<li>多语言描述总表 <code>SYS_PROMPTS</code></li>
+<li>所有平台和功能页面的实体对象所关联的多语言表 <code>*_TL</code></li>
+<li>KendoUI 国际化支持文件 <code>kendo.culture.&lt;locale&gt;.js</code> 和 <code>kendo.messages.&lt;locale&gt;.js</code></li>
+</ol>
+<p>下面以西班牙语为例，详细说明整个过程。</p>
+<h3 id="1-定义语言代码"><a href="#1-定义语言代码" class="headerlink" title="1. 定义语言代码"></a>1. 定义语言代码</h3><p>进入 <code>系统管理</code> &gt; <code>语言维护</code> 新增西班牙语言代码 <code>es_ES</code></p>
+<p><img data-src="/2018/10/09/hap-enable-new-language/image-20181009103555564.png" alt="image-20181009103555564"></p>
+<h3 id="2-适配-KendoUI-国际化资源文件"><a href="#2-适配-KendoUI-国际化资源文件" class="headerlink" title="2. 适配 KendoUI 国际化资源文件"></a>2. 适配 KendoUI 国际化资源文件</h3><p>按照下表将指定的资源文件拷贝到对应目录下：</p>
+<table>
+<thead>
+<tr>
+<th>源文件路径</th>
+<th>拷贝后的路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>target/core/lib/kendoui/js/messages/kendo.messages.en-GB.js</td>
+<td>src/webapp/lib/kendoui/js/messages/kendo.messages.es-ES.js</td>
+</tr>
+<tr>
+<td>target/core/lib/kendoui/js/cultures/kendo.culture.en-GB.js</td>
+<td>src/webapp/lib/kendoui/js/cultures/kendo.culture.es-ES.js</td>
+</tr>
+</tbody></table>
+<h3 id="3-更新数据库记录"><a href="#3-更新数据库记录" class="headerlink" title="3. 更新数据库记录"></a>3. 更新数据库记录</h3><p>使用 en_GB 下的语言记录来更新所有的国际化表，脚本如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- ========================================================</span></span><br><span class="line"><span class="comment">-- Insert all Spanish records based on original en_GB</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="comment">-- Creation Date : 2018-10-08</span></span><br><span class="line"><span class="comment">-- Created By    : memories.liu@hand-china.com</span></span><br><span class="line"><span class="comment">-- Script Version: 1.0.0</span></span><br><span class="line"><span class="comment">-- HAP Version   : 3.5.0-RELEASE</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="comment">-- ========================================================</span></span><br><span class="line"><span class="comment">-- System Prompt table:</span></span><br><span class="line"><span class="comment">--   SYS_PROMPTS</span></span><br><span class="line"><span class="comment">-- Multi-lingual tables listed below:</span></span><br><span class="line"><span class="comment">--   FND_COMPANY_TL</span></span><br><span class="line"><span class="comment">--   HR_ORG_POSITION_TL</span></span><br><span class="line"><span class="comment">--   HR_ORG_UNIT_TL</span></span><br><span class="line"><span class="comment">--   SYS_ATTACH_CATEGORY_TL</span></span><br><span class="line"><span class="comment">--   SYS_CODE_TL</span></span><br><span class="line"><span class="comment">--   SYS_CODE_VALUE_TL</span></span><br><span class="line"><span class="comment">--   SYS_DASHBOARD_TL</span></span><br><span class="line"><span class="comment">--   SYS_FUNCTION_TL</span></span><br><span class="line"><span class="comment">--   SYS_HOTKEY_TL</span></span><br><span class="line"><span class="comment">--   SYS_IF_CONFIG_HEADER_TL</span></span><br><span class="line"><span class="comment">--   SYS_IF_CONFIG_LINE_TL</span></span><br><span class="line"><span class="comment">--   SYS_RESOURCE_ITEM_TL</span></span><br><span class="line"><span class="comment">--   SYS_RESOURCE_TL</span></span><br><span class="line"><span class="comment">--   SYS_ROLE_TL</span></span><br><span class="line"><span class="comment">-- ========================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- sys_prompts</span></span><br><span class="line"><span class="keyword">insert into</span> sys_prompts (</span><br><span class="line">  prompt_id,</span><br><span class="line">  prompt_code,</span><br><span class="line">  lang,</span><br><span class="line">  description,</span><br><span class="line">  object_version_number</span><br><span class="line">)</span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line">  SYS_PROMPTS_S.NEXTVAL,</span><br><span class="line">  prompt_code,</span><br><span class="line">  <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">  description,</span><br><span class="line">  object_version_number</span><br><span class="line"><span class="keyword">from</span> sys_prompts <span class="keyword">where</span> lang <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- FND_COMPANY_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> FND_COMPANY_TL(</span><br><span class="line">    COMPANY_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    COMPANY_SHORT_NAME,</span><br><span class="line">    COMPANY_FULL_NAME</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    COMPANY_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    COMPANY_SHORT_NAME,</span><br><span class="line">    COMPANY_FULL_NAME</span><br><span class="line"><span class="keyword">FROM</span> FND_COMPANY_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- HR_ORG_POSITION_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> HR_ORG_POSITION_TL(</span><br><span class="line">    POSITION_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    POSITION_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> HR_ORG_POSITION_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- HR_ORG_UNIT_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> HR_ORG_UNIT_TL(</span><br><span class="line">    UNIT_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    UNIT_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> HR_ORG_UNIT_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_ATTACH_CATEGORY_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_ATTACH_CATEGORY_TL(</span><br><span class="line">    CATEGORY_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    CATEGORY_NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    CATEGORY_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    CATEGORY_NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_ATTACH_CATEGORY_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_CODE_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_CODE_TL(</span><br><span class="line">    CODE_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    CODE_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_CODE_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_CODE_VALUE_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_CODE_VALUE_TL(</span><br><span class="line">    CODE_VALUE_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    MEANING,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    CODE_VALUE_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    MEANING,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_CODE_VALUE_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_DASHBOARD_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_DASHBOARD_TL(</span><br><span class="line">    DASHBOARD_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    TITLE,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    DASHBOARD_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    TITLE,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_DASHBOARD_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_FUNCTION_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_FUNCTION_TL(</span><br><span class="line">    FUNCTION_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    FUNCTION_NAME,</span><br><span class="line">    FUNCTION_DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    FUNCTION_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    FUNCTION_NAME,</span><br><span class="line">    FUNCTION_DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_FUNCTION_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_HOTKEY_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_HOTKEY_TL(</span><br><span class="line">    HOTKEY_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    HOTKEY_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_HOTKEY_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_IF_CONFIG_HEADER_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_IF_CONFIG_HEADER_TL(</span><br><span class="line">    HEADER_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    HEADER_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_IF_CONFIG_HEADER_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_IF_CONFIG_LINE_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_IF_CONFIG_LINE_TL(</span><br><span class="line">    LINE_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    LINE_NAME,</span><br><span class="line">    LINE_DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    LINE_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    LINE_NAME,</span><br><span class="line">    LINE_DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_IF_CONFIG_LINE_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_RESOURCE_ITEM_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_RESOURCE_ITEM_TL(</span><br><span class="line">    RESOURCE_ITEM_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    ITEM_NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    RESOURCE_ITEM_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    ITEM_NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_RESOURCE_ITEM_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_RESOURCE_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_RESOURCE_TL(</span><br><span class="line">    RESOURCE_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    RESOURCE_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    NAME,</span><br><span class="line">    DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_RESOURCE_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- SYS_ROLE_TL</span></span><br><span class="line"><span class="keyword">INSERT INTO</span> SYS_ROLE_TL(</span><br><span class="line">    ROLE_ID,</span><br><span class="line">    LANG,</span><br><span class="line">    ROLE_NAME,</span><br><span class="line">    ROLE_DESCRIPTION</span><br><span class="line">) <span class="keyword">SELECT</span> </span><br><span class="line">    ROLE_ID,</span><br><span class="line">    <span class="string">&#x27;es_ES&#x27;</span>,</span><br><span class="line">    ROLE_NAME,</span><br><span class="line">    ROLE_DESCRIPTION</span><br><span class="line"><span class="keyword">FROM</span> SYS_ROLE_TL <span class="keyword">WHERE</span> LANG <span class="operator">=</span> <span class="string">&#x27;en_GB&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-人工翻译"><a href="#4-人工翻译" class="headerlink" title="4. 人工翻译"></a>4. 人工翻译</h3><p>将所有西班牙语言下的字符串进行人工翻译，这包括 kendoui 的国际化资源文件和所有的国际化表的记录。</p>
+<h3 id="5-清缓存并重启服务器"><a href="#5-清缓存并重启服务器" class="headerlink" title="5. 清缓存并重启服务器"></a>5. 清缓存并重启服务器</h3><p>启动命令行工具 redis-cli 并连接至 Redis，执行以下命令清除 Redis 缓存：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flushall</span><br></pre></td></tr></table></figure>
+
+<p>重启 Tomcat 服务器。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>eliu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://eliu.github.io/2018/10/09/hap-enable-new-language/" title="为HAP应用启用新语言支持">https://eliu.github.io/2018/10/09/hap-enable-new-language/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/i18n/" rel="tag"># i18n</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/10/02/install-k8s-using-kubeadm/" rel="prev" title="使用 kubeadm 快速安装 Kubernetes 集群">
+                  <i class="fa fa-angle-left"></i> 使用 kubeadm 快速安装 Kubernetes 集群
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/10/15/hap-i18n-irequest/" rel="next" title="在非页面入口处理多语言环境">
+                  在非页面入口处理多语言环境 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="6505eb7b7b45f0b17670f681be94cc30"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2018 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">eliu. All rights reserved.</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eliu" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"$HEXO_CHANGYAN_APPID","appkey":"$HEXO_CHANGYAN_APPKEY","count":true}</script>
+<script src="/js/third-party/comments/changyan.js" defer></script>
+
+</body>
+</html>

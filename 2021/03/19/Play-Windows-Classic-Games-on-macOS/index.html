@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"eliu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"a11y-light","dark":"a11y-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="写在前面笔者作为80后，至今仍然对于青春时代曾经伴随着我们的经典游戏念念不忘。暗黑破坏神、魔兽争霸、重返德军总部。。。那毕竟是我们这一代的青春。即使我现在玩不动了，但笔记本电脑中依然保留着这些游戏，偶尔玩一下怀念怀念也好。 我的笔记本现在已经换成 MacBook Pro，运行着 macOS Catalina 操作系统，曾经的经典游戏常规的方法依然无法继续运行了。当然你可能会说，安装一个虚拟机系统，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Wine 在 macOS 上运行经典的 Windows 游戏">
+<meta property="og:url" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/index.html">
+<meta property="og:site_name" content="楓の葉">
+<meta property="og:description" content="写在前面笔者作为80后，至今仍然对于青春时代曾经伴随着我们的经典游戏念念不忘。暗黑破坏神、魔兽争霸、重返德军总部。。。那毕竟是我们这一代的青春。即使我现在玩不动了，但笔记本电脑中依然保留着这些游戏，偶尔玩一下怀念怀念也好。 我的笔记本现在已经换成 MacBook Pro，运行着 macOS Catalina 操作系统，曾经的经典游戏常规的方法依然无法继续运行了。当然你可能会说，安装一个虚拟机系统，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png">
+<meta property="og:image" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/regedit.png">
+<meta property="og:image" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/d2.png">
+<meta property="article:published_time" content="2021-03-19T06:31:56.000Z">
+<meta property="article:modified_time" content="2025-09-30T01:54:53.614Z">
+<meta property="article:author" content="eliu">
+<meta property="article:tag" content="wine">
+<meta property="article:tag" content="macOS">
+<meta property="article:tag" content="Diablo II">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png">
+
+
+<link rel="canonical" href="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/","path":"2021/03/19/Play-Windows-Classic-Games-on-macOS/","title":"使用 Wine 在 macOS 上运行经典的 Windows 游戏"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用 Wine 在 macOS 上运行经典的 Windows 游戏 | 楓の葉</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script><script src="/js/pjax.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">楓の葉</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">花有重开时，人无再少年</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Wine-%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">Wine 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#macOS-%E4%B8%8B%E5%AE%89%E8%A3%85-Wine"><span class="nav-number">3.</span> <span class="nav-text">macOS 下安装 Wine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-Wine"><span class="nav-number">4.</span> <span class="nav-text">配置 Wine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-Wine"><span class="nav-number">4.1.</span> <span class="nav-text">初始化 Wine</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text">解决中文乱码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%87%E6%80%BB%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">4.3.</span> <span class="nav-text">汇总配置项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E7%BB%8F%E5%85%B8%E6%B8%B8%E6%88%8F"><span class="nav-number">5.</span> <span class="nav-text">运行经典游戏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Diablo-II"><span class="nav-number">5.1.</span> <span class="nav-text">Diablo II</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E7%BB%88%E7%AB%AF%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%B1%87%E6%80%BB"><span class="nav-number">6.</span> <span class="nav-text">附录：终端环境配置汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="eliu"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">eliu</p>
+  <div class="site-description" itemprop="description">楓の葉的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eliu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eliu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:eliuhy@163.com" title="E-Mail → mailto:eliuhy@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="eliu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+      <meta itemprop="description" content="楓の葉的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用 Wine 在 macOS 上运行经典的 Windows 游戏 | 楓の葉">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用 Wine 在 macOS 上运行经典的 Windows 游戏
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-19 14:31:56" itemprop="dateCreated datePublished" datetime="2021-03-19T14:31:56+08:00">2021-03-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-09-30 09:54:53" itemprop="dateModified" datetime="2025-09-30T09:54:53+08:00">2025-09-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Classic-Games/" itemprop="url" rel="index"><span itemprop="name">Classic Games</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="使用 Wine 在 macOS 上运行经典的 Windows 游戏" href="/2021/03/19/Play-Windows-Classic-Games-on-macOS/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::036faaaa531a1fc7d76c864d49142bce" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>笔者作为80后，至今仍然对于青春时代曾经伴随着我们的经典游戏念念不忘。暗黑破坏神、魔兽争霸、重返德军总部。。。那毕竟是我们这一代的青春。即使我现在玩不动了，但笔记本电脑中依然保留着这些游戏，偶尔玩一下怀念怀念也好。</p>
+<p>我的笔记本现在已经换成 MacBook Pro，运行着 macOS Catalina 操作系统，曾经的经典游戏常规的方法依然无法继续运行了。当然你可能会说，安装一个虚拟机系统，里面跑一个 Windows XP 也可以玩了。这当然可以做到，但是它太重了，而且中间隔着一个虚拟化层，运行效率自然不高。作为搞 IT 的，怎么可以止步于此？</p>
+<p>本次介绍一种使用 Wine 运行经典游戏的方法，教程适用于 macOS 操作系统，但思路也适用于 Linux。</p>
+<span id="more"></span>
+
+<h2 id="Wine-简介"><a href="#Wine-简介" class="headerlink" title="Wine 简介"></a>Wine 简介</h2><p>来自维基百科：Wine通过提供一个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%85%BC%E5%AE%B9%E5%B1%82">兼容层</a>来将Windows的系统调用转换成与POSIX标准的系统调用。它还提供了Windows系统运行库的替代品和一些系统组件的替代品。为了避免著作权问题，Wine主要使用黑箱测试逆向工程来编写。</p>
+<p>说白了 Wine 和虚拟机的玩法有本质上的区别，Wine 是操作系统层的 API 调用转换，并没有虚拟层，因此运行效率上比虚拟机方式会高很多。</p>
+<h2 id="macOS-下安装-Wine"><a href="#macOS-下安装-Wine" class="headerlink" title="macOS 下安装 Wine"></a>macOS 下安装 Wine</h2><p>本次我们将使用 Homebrew 来安装 Wine，Homebrew 是 macOS 下最流行的包管理器，如果您还没有安装 Homebrew，请访问 <a target="_blank" rel="noopener" href="https://brew.sh/">Homebrew 官网</a>详细了解，或者直接在终端使用以下命令进行安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /bin/bash -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来我们使用 Homebrew 来安装 Wine:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">sudo</span> spctl --master-disable <span class="comment"># 允许未知来源的软件安装</span></span><br><span class="line">$ brew tap gcenx/wine</span><br><span class="line">$ brew cask install --no-quarantine wine-crossover</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置-Wine"><a href="#配置-Wine" class="headerlink" title="配置 Wine"></a>配置 Wine</h2><p>我们的目标是运行 Windows 下的经典游戏，因此此处所有的配置都是针对这个目标进行的。接下来我们开始配置 Wine 环境。</p>
+<h3 id="初始化-Wine"><a href="#初始化-Wine" class="headerlink" title="初始化 Wine"></a>初始化 Wine</h3><p>我们准备将 Wine 的主目录存储在 <code>$HOME/.wine/</code> 下，在终端执行一下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ WINEPREFIX=<span class="variable">$HOME</span>/.wine winecfg</span><br></pre></td></tr></table></figure>
+
+<p>此时 WIne 会启动一个包含若干标签页的配置窗口，我们需要设置以下内容：</p>
+<table>
+<thead>
+<tr>
+<th>标签页</th>
+<th>属性</th>
+<th>值</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Applications</td>
+<td>WIndows Version</td>
+<td>Windows XP</td>
+<td></td>
+</tr>
+<tr>
+<td>Libraries</td>
+<td>New override for library</td>
+<td>ddraw</td>
+<td>然后点击 <code>Add</code> 按钮添加</td>
+</tr>
+</tbody></table>
+<p>配置窗口截图如下所示：</p>
+<p><img data-src="/2021/03/19/Play-Windows-Classic-Games-on-macOS/winecfg.png" alt="winecfg"></p>
+<p>设置完成之后，点击 <code>OK</code> 按钮保存设置，此时 Wine 的主目录 <code>$HOME/.wine</code> 的目录结构看起来是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── dosdevices</span><br><span class="line">│   ├── c: -&gt; ../drive_c</span><br><span class="line">│   └── z: -&gt; /</span><br><span class="line">├── drive_c</span><br><span class="line">│   ├── Program Files</span><br><span class="line">│   ├── ProgramData</span><br><span class="line">│   ├── users</span><br><span class="line">│   └── windows</span><br><span class="line">├── system.reg</span><br><span class="line">├── user.reg</span><br><span class="line">└── userdef.reg</span><br></pre></td></tr></table></figure>
+
+<p>至此，Wine 所有的安装和配置工作全部结束，接下来就是如何在 Wine 中运行经典的游戏了。</p>
+<h3 id="解决中文乱码"><a href="#解决中文乱码" class="headerlink" title="解决中文乱码"></a>解决中文乱码</h3><p>在终端的 shell 配置文件中为 <code>wine64</code> 添加别名 <code>wine</code>，如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> wine=<span class="string">&quot;env LC_ALL=zh_CN.UTF-8 wine64&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="汇总配置项"><a href="#汇总配置项" class="headerlink" title="汇总配置项"></a>汇总配置项</h3><p>将以上配置项汇总后保存在 <code>$HOME/.bashrc</code> 中，如果当前安装的 shell 是 zsh 的话，则保存在 <code>$HOME/.zshrc</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解决报错：terminals database is inaccessible</span></span><br><span class="line"><span class="built_in">export</span> TERMINFO=/usr/share/terminfo</span><br><span class="line"><span class="comment"># 禁止在终端输出所有调试信息</span></span><br><span class="line"><span class="built_in">export</span> WINEDEBUG=-all</span><br><span class="line"><span class="comment"># Wine 主目录</span></span><br><span class="line"><span class="built_in">export</span> WINEPREFIX=~/.wine</span><br><span class="line"><span class="comment"># 解决中文乱码并创建别名</span></span><br><span class="line"><span class="built_in">alias</span> wine=<span class="string">&quot;env LC_ALL=zh_CN.UTF-8 wine64&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="运行经典游戏"><a href="#运行经典游戏" class="headerlink" title="运行经典游戏"></a>运行经典游戏</h2><h3 id="Diablo-II"><a href="#Diablo-II" class="headerlink" title="Diablo II"></a>Diablo II</h3><p>我们以 Diablo II 为例来进行说明，首先进入目录 <code>$HOME/.wine/drive_c</code> ，然后新建目录 <code>games</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> <span class="variable">$HOME</span>/.wine/drive_c</span><br><span class="line">$ <span class="built_in">mkdir</span> games</span><br></pre></td></tr></table></figure>
+
+<p>之后，下载免安装版的 Diablo II 游戏到 <code>$HOME/.wine/drive_c/games/Diablo II</code>，相信你可以很容易下载到的 :)</p>
+<p>然后打开注册表，增加注册表项 <code>KEY_CURRENT_USER\Software\Blizzard Entertainment\Diablo II\VideoConfig</code> 并设置该项的类型为 REG_DWORD，值为 <code>0</code>：</p>
+<p><img data-src="/2021/03/19/Play-Windows-Classic-Games-on-macOS/regedit.png" alt="regedit"></p>
+<p>在终端启动 Diablo II：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">alias</span> d2=<span class="string">&quot;cd <span class="variable">$HOME</span>/.wine/drive_c/games/Diablo\ II &amp;&amp; wine Game.exe -w -direct -txt&quot;</span></span><br><span class="line">$ d2</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/2021/03/19/Play-Windows-Classic-Games-on-macOS/d2.png" alt="DiabloI II"></p>
+<p>至此，Diablo II 游戏的基本设置就已经全部完成。其他的经典游戏步骤类似，笔者已经测试通过了如下经典游戏：</p>
+<ul>
+<li>暗黑破坏神 II</li>
+<li>重返德军总部</li>
+<li>魔兽争霸 III （过场动画会报错）</li>
+</ul>
+<h2 id="附录：终端环境配置汇总"><a href="#附录：终端环境配置汇总" class="headerlink" title="附录：终端环境配置汇总"></a>附录：终端环境配置汇总</h2><p>追加如下配置到 <code>$HOME/.zshrc</code> 或者 <code>$HOME/.bashrc</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Fix error `terminals database is inaccessible`</span></span><br><span class="line"><span class="built_in">export</span> TERMINFO=/usr/share/terminfo</span><br><span class="line"><span class="comment"># Disable debugging message output</span></span><br><span class="line"><span class="built_in">export</span> WINEDEBUG=-all</span><br><span class="line"><span class="comment"># Set up wine home directory</span></span><br><span class="line"><span class="built_in">export</span> WINEPREFIX=~/.wine</span><br><span class="line"><span class="built_in">export</span> WINEGAMEHOME=<span class="string">&quot;<span class="variable">$WINEPREFIX</span>/drive_c/games&quot;</span></span><br><span class="line"><span class="built_in">alias</span> wine=<span class="string">&quot;env LC_ALL=zh_CN.UTF-8 wine&quot;</span></span><br><span class="line"><span class="built_in">alias</span> d2=<span class="string">&quot;cd <span class="variable">$WINEGAMEHOME</span>/Diablo\ II &amp;&amp; wine Game.exe -w -direct -txt&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/whipowill/d2-plugy-qol/blob/master/Guides/MacOSX.md">D2QOL | Mac OSX</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/whipowill/d2-plugy-qol/blob/master/Guides/Video.md">D2QOL | Video</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Y1575071736/article/details/91356917">macOS Mojave下解决wine中文乱码问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29695701/article/details/90715653">terminals database is inaccessible 解决办法 | CSDN</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.winehq.org/Debug_Channels">Debug Channels - WineHQ Wiki</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>eliu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/" title="使用 Wine 在 macOS 上运行经典的 Windows 游戏">https://eliu.github.io/2021/03/19/Play-Windows-Classic-Games-on-macOS/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/wine/" rel="tag"># wine</a>
+              <a href="/tags/macOS/" rel="tag"># macOS</a>
+              <a href="/tags/Diablo-II/" rel="tag"># Diablo II</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/11/hexo-quickstart/" rel="prev" title="Hexo 快速入门">
+                  <i class="fa fa-angle-left"></i> Hexo 快速入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/24/run-local-k8s-using-kind/" rel="next" title="使用 kind 在本地运行 k8s">
+                  使用 kind 在本地运行 k8s <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="036faaaa531a1fc7d76c864d49142bce"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2018 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">eliu. All rights reserved.</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eliu" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"$HEXO_CHANGYAN_APPID","appkey":"$HEXO_CHANGYAN_APPKEY","count":true}</script>
+<script src="/js/third-party/comments/changyan.js" defer></script>
+
+</body>
+</html>

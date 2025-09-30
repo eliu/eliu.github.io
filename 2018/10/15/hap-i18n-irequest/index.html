@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"eliu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.25.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"a11y-light","dark":"a11y-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="概述在 HAP 中，从浏览器打开的页面或者调用的 Rest API 都必须经过控制器层，而控制器层可以很容易地获取 HttpServletRequest 对象，进而构造 IRequest 对象来存储环境上下文信息，这里就包括当前的语言环境。 举例说明： 12345public ResponseData processRequest(HttpServletRequest request) &amp;#123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在非页面入口处理多语言环境">
+<meta property="og:url" content="https://eliu.github.io/2018/10/15/hap-i18n-irequest/index.html">
+<meta property="og:site_name" content="楓の葉">
+<meta property="og:description" content="概述在 HAP 中，从浏览器打开的页面或者调用的 Rest API 都必须经过控制器层，而控制器层可以很容易地获取 HttpServletRequest 对象，进而构造 IRequest 对象来存储环境上下文信息，这里就包括当前的语言环境。 举例说明： 12345public ResponseData processRequest(HttpServletRequest request) &amp;#123">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-10-15T08:11:09.000Z">
+<meta property="article:modified_time" content="2025-09-30T01:54:53.625Z">
+<meta property="article:author" content="eliu">
+<meta property="article:tag" content="i18n">
+<meta property="article:tag" content="iRequest">
+<meta property="article:tag" content="locale">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://eliu.github.io/2018/10/15/hap-i18n-irequest/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://eliu.github.io/2018/10/15/hap-i18n-irequest/","path":"2018/10/15/hap-i18n-irequest/","title":"在非页面入口处理多语言环境"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>在非页面入口处理多语言环境 | 楓の葉</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script><script src="/js/pjax.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">楓の葉</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">花有重开时，人无再少年</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99"><span class="nav-number">1.1.</span> <span class="nav-text">基本原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RequestHelper"><span class="nav-number">1.2.</span> <span class="nav-text">RequestHelper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#en-US-vs-en-GB"><span class="nav-number">1.3.</span> <span class="nav-text">en_US vs en_GB</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">任务管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">3.</span> <span class="nav-text">工作流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UReport2-Beans"><span class="nav-number">4.</span> <span class="nav-text">UReport2 Beans</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">定时任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rest-API-Controller"><span class="nav-number">6.</span> <span class="nav-text">Rest API Controller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E6%9C%8D%E5%8A%A1%E5%B1%82AOP%E5%88%87%E9%9D%A2%E7%B1%BB"><span class="nav-number">7.</span> <span class="nav-text">优化服务层AOP切面类</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="eliu"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">eliu</p>
+  <div class="site-description" itemprop="description">楓の葉的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eliu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eliu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:eliuhy@163.com" title="E-Mail → mailto:eliuhy@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2018/10/15/hap-i18n-irequest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="eliu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+      <meta itemprop="description" content="楓の葉的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="在非页面入口处理多语言环境 | 楓の葉">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在非页面入口处理多语言环境
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-10-15 16:11:09" itemprop="dateCreated datePublished" datetime="2018-10-15T16:11:09+08:00">2018-10-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-09-30 09:54:53" itemprop="dateModified" datetime="2025-09-30T09:54:53+08:00">2025-09-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/HAP/" itemprop="url" rel="index"><span itemprop="name">HAP</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="在非页面入口处理多语言环境" href="/2018/10/15/hap-i18n-irequest/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::35c9ac1ffd808744ac32f927c69f6f7a" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在 HAP 中，从浏览器打开的页面或者调用的 Rest API 都必须经过控制器层，而控制器层可以很容易地获取 <code>HttpServletRequest</code> 对象，进而构造 <code>IRequest</code> 对象来存储环境上下文信息，这里就包括当前的语言环境。</p>
+<p>举例说明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> ResponseData <span class="title function_">processRequest</span><span class="params">(HttpServletRequest request)</span> &#123;</span><br><span class="line">    <span class="type">IRequest</span> <span class="variable">iRequest</span> <span class="operator">=</span> <span class="built_in">this</span>.createRequestContext(request);</span><br><span class="line">    <span class="comment">// 调用服务层方法并传入 IRequest 进行业务处理</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ResponseData</span>(service.someMethod(iRequest));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此在控制器层获取当前设置的语言环境是轻而易举的事情。不过，HAP 开发过程中会有很多其他的场景不会将控制器作为入口进入。在<code>任务管理</code>、<code>定时任务</code>、<code>工作流</code>和<code>UReport2报表</code>中，核心程序的入口都是通过向 Spring 注册一些通用的服务组件(<code>@Component</code>) 并实现特定的接口来实现的。因此这种场景下，如何构建一个正确的 IRequest 对象就成为一个很有技巧性的问题了。</p>
+<span id="more"></span>
+
+<h3 id="基本原则"><a href="#基本原则" class="headerlink" title="基本原则"></a>基本原则</h3><p>构造一个 IRequest 对象的通用方法一般是通过 RequestHelper 帮助类进行辅助完成的。同时，我们要根据不同场景来获取当前环境的语言代码。然后将构建好的 IRequest 通过参数形式传递到 Service 层的方法。</p>
+<blockquote>
+<p><strong>注意：</strong> HAP 框架的最佳实践要求我们一定要将 IRequest 经由 Service 层调用才可以，因为框架内部已经为 Service 层增加了 AOP 处理，在调用前后会自动判断 Service 方法是否存在 IRequest 类型的参数。如果有，那么会对其自动进行管理。</p>
+</blockquote>
+<h3 id="RequestHelper"><a href="#RequestHelper" class="headerlink" title="RequestHelper"></a>RequestHelper</h3><p>HAP 框架内部提供了一个帮助类 RequestHelper 来辅助开发者获取当前设置的 IRequest 实例或者新建一个全新的 IRequest。该类定义在 <code>com.hand.hap.core.impl</code>包下，下表列出常见的方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>createServiceRequest</td>
+<td>根据 HttpServletRequest 构建 IRequest</td>
+</tr>
+<tr>
+<td>newEmptyRequest</td>
+<td>创建一个全新的 IRequest 实例</td>
+</tr>
+<tr>
+<td>clearCurrentRequest</td>
+<td>从 ThreadLocal 中清除当前的 IRequest 实例</td>
+</tr>
+<tr>
+<td>setCurrentRequest</td>
+<td>将一个 IRequest 对象设置为当前的生效</td>
+</tr>
+<tr>
+<td>getCurrentRequest</td>
+<td>获取当前上下文的 IRequest 对象</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>注意：</strong><code>getCurrentRequest</code> 的唯一的 bool 类型参数 <code>returnEmptyForNull</code>的含义为，若从当前上下文中无法获取有效的 IRequest 对象时：</p>
+<p><code>true</code>: 调用 <code>newEmptyRequest</code> 创建一个新的请求对象</p>
+<p><code>false</code>:  直接返回给调用者 <strong>null</strong></p>
+</blockquote>
+<p>接下来我们利用 RequestHelper 类来处理不同的应用场景下的多语言需求。</p>
+<h3 id="en-US-vs-en-GB"><a href="#en-US-vs-en-GB" class="headerlink" title="en_US vs en_GB"></a>en_US vs en_GB</h3><p>当系统无法从上下文（ThreadLocal&lt;IRequest&gt;）获取 IRequest 实例时，通常我们会使用 newEmptyRequest 来新建一个空的 IRequest 对象。该方法会使用 ServiceRequest 类实例化 IRequest 对象，而此时 locale 属性则是使用 <code>Locale.getDefault().toString()</code> 方法来初始化默认值的。这在开发者本机一般是没有问题，然而在服务器运行时，它会返回服务器默认的语言代码 <strong>en_US</strong>，而不是 HAP 的 en_GB 。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Locale;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ServiceRequest</span> <span class="keyword">implements</span> <span class="title class_">IRequest</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">String</span> <span class="variable">locale</span> <span class="operator">=</span> Locale.getDefault().toString();</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个现象通常会在定时任务或者 Rest API 等等场景下，在服务层无法正确查询到多语言记录。接下来我们针对不同的应用场景来分别讨论解决方法。</p>
+<h2 id="任务管理"><a href="#任务管理" class="headerlink" title="任务管理"></a>任务管理</h2><p>对于任务管理，我们可以通过 <code>RequestHelper.getCurrentRequest</code> 来得到当前的 IRequest 实例。但在 Linux 服务器下，它的 locale 属性并不是 <code>en_GB</code>，而是 <code>en_US</code>，这与 HAP 的语言代码不一致，导致无法正确获取多语言记录。</p>
+<p>因此任务管理场景下的实现思路是根据任务的提交者找到对应的系统用户ID，进而找到这个用户在首选项中的语言设置，之后替换 IRequest 的 locale 属性，最后传入 Service 层。实现代码大致如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.hand.hap.account.service.IUserService;</span><br><span class="line"><span class="keyword">import</span> com.hand.hap.core.IRequest;</span><br><span class="line"><span class="keyword">import</span> com.hand.hap.core.impl.RequestHelper;</span><br><span class="line"><span class="keyword">import</span> com.hand.hap.system.dto.SysPreferences;</span><br><span class="line"><span class="keyword">import</span> com.hand.hap.system.service.ISysPreferencesService;</span><br><span class="line"><span class="keyword">import</span> com.hand.hap.task.info.ExecutionInfo;</span><br><span class="line"><span class="keyword">import</span> com.hand.hap.task.service.ITask;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> com.hand.hap.account.dto.User;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> demo.service.IDemoService;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DemoTask</span> <span class="keyword">implements</span> <span class="title class_">ITask</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    IDemoService demoService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    ISysPreferencesService preferencesService;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    IUserService userService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(ExecutionInfo executionInfo)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 获取当前任务的提交者</span></span><br><span class="line">        <span class="type">User</span> <span class="variable">executioner</span> <span class="operator">=</span> userService.selectByUserName(executionInfo.getUsername());</span><br><span class="line">        <span class="comment">// 根据提交者的用户ID得到用户首选项中设置的语言代码</span></span><br><span class="line">        <span class="type">SysPreferences</span> <span class="variable">preference</span> <span class="operator">=</span> preferencesService.selectUserPreference(<span class="string">&quot;locale&quot;</span>, executioner.getUserId());</span><br><span class="line">        <span class="comment">// 得到当前的 IRequest</span></span><br><span class="line">        <span class="type">IRequest</span> <span class="variable">request</span> <span class="operator">=</span> RequestHelper.getCurrentRequest(<span class="literal">true</span>);</span><br><span class="line">        <span class="comment">// 设置IRequest的语言上下文</span></span><br><span class="line">        request.setLocale(preference.getPreferencesValue());</span><br><span class="line">        <span class="comment">// 将IRequest传入Service层的方法</span></span><br><span class="line">        <span class="comment">// Service的AOP机制将会自动处理IRequest的生命周期</span></span><br><span class="line">        demoService.serviceMethod(request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="工作流"><a href="#工作流" class="headerlink" title="工作流"></a>工作流</h2><p>工作流场景下的实现思路是获取当前工作流的提交者（Initiator），进而定位至该员工的系统用户，最后获取首选项的语言代码构建 IRequest。实现代码大致如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ActivityDemoBean</span> <span class="keyword">implements</span> <span class="title class_">IActivitiBean</span>, JavaDelegate &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    IUserService userService;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    ISysPreferencesService preferencesService;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    IDemoService demoService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(DelegateExecution execution)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">initiator</span> <span class="operator">=</span> execution.getVariable(<span class="string">&quot;initiator&quot;</span>, String.class);</span><br><span class="line">        List&lt;User&gt; users = userService.selectUserNameByEmployeeCode(initiator);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(CollectionUtils.isNotEmpty(users)) &#123;</span><br><span class="line">            <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> users.get(<span class="number">0</span>);</span><br><span class="line">            <span class="type">SysPreferences</span> <span class="variable">preference</span> <span class="operator">=</span> </span><br><span class="line">                preferencesService.selectUserPreference(<span class="string">&quot;locale&quot;</span>, user.getUserId());</span><br><span class="line">            <span class="comment">// 新建IRequest</span></span><br><span class="line">            <span class="type">IRequest</span> <span class="variable">request</span> <span class="operator">=</span> RequestHelper.getCurrentRequest(<span class="literal">true</span>);</span><br><span class="line">            <span class="comment">// 设置IRequest的语言上下文</span></span><br><span class="line">            request.setLocale(preference.getPreferencesValue());</span><br><span class="line">            <span class="comment">// 将IRequest传入Service层的方法</span></span><br><span class="line">            <span class="comment">// Service的AOP机制将会自动处理IRequest的生命周期</span></span><br><span class="line">            demoService.serviceMethod(request);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="UReport2-Beans"><a href="#UReport2-Beans" class="headerlink" title="UReport2 Beans"></a>UReport2 Beans</h2><p>UReport2 本身提供了一个方法叫 RequestHolder 可以用来获取当前的 IRequest，我们可以借助这个方法来达到目的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UreportDataSourceBean</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    IDemoService demoService;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> List&lt;Demo&gt; <span class="title function_">loadDemoData</span><span class="params">(String dsName, </span></span><br><span class="line"><span class="params">                                   String datasetName, </span></span><br><span class="line"><span class="params">                                   Map&lt;String, Object&gt; parameters)</span> &#123;</span><br><span class="line">        <span class="comment">// 初始化请求上下文</span></span><br><span class="line">        <span class="type">HttpServletRequest</span> <span class="variable">request</span> <span class="operator">=</span> RequestHolder.getRequest();</span><br><span class="line">        <span class="type">IRequest</span> <span class="variable">requestContext</span> <span class="operator">=</span> RequestHelper.createServiceRequest(request);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行查询</span></span><br><span class="line">        List&lt;Demo&gt; result = demoService.method(requestContext);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="定时任务"><a href="#定时任务" class="headerlink" title="定时任务"></a>定时任务</h2><p>定时任务由于其后台自动调度的特点，导致其上下文无法获取用户信息。所以针对定时任务，我们需要定义一个系统配置项来预设置一个默认的语言代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Ora2062DemoJob</span> <span class="keyword">extends</span> <span class="title class_">AbstractJob</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    IOra2062DemoService demoService;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    IProfileService profileService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">safeExecute</span><span class="params">(JobExecutionContext context)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 新建一个空的 IRequest</span></span><br><span class="line">        <span class="type">IRequest</span> <span class="variable">request</span> <span class="operator">=</span> RequestHelper.getCurrentRequest(<span class="literal">true</span>);</span><br><span class="line">        <span class="comment">// 从系统配置项 SYSTEM_LANG 中获取默认的语言代码</span></span><br><span class="line">        request.setLocale(profileService.getProfileValue(request, <span class="string">&quot;SYSTEM_LANG&quot;</span>));</span><br><span class="line">        <span class="comment">// 调用服务方法</span></span><br><span class="line">        demoService.method(request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>提示：</strong>SYSTEM_LANG 是一个全局系统配置项，可设置默认值为 en_GB</p>
+</blockquote>
+<h2 id="Rest-API-Controller"><a href="#Rest-API-Controller" class="headerlink" title="Rest API Controller"></a>Rest API Controller</h2><p>HAP 通过在控制器层映射特定前缀的路径来向外部提供 Rest API 服务。一般情况下，Rest API 会结合 OAuth2 进行客户端授权管理来完成身份的验证。当我们采用用户名密码方式进行授权的时候，客户端账户会与这个系统用户进行关联和初始化，所以在控制器层创建 IRequest 的时候是可以正确取到上下文信息的。</p>
+<p>不过这种方式有个弊端是系统用户信息会暴露给外界。在某些场景下，这是不太安全的做法，这时我们通常会改用 <code>client_credentials</code> 的授权方式。不过这种方式下，控制器层是没办法定位当前执行的上下文是哪个用户，进而 locale 也是没法获取上下文值。</p>
+<h2 id="优化服务层AOP切面类"><a href="#优化服务层AOP切面类" class="headerlink" title="优化服务层AOP切面类"></a>优化服务层AOP切面类</h2><p>你可以采用与<code>定时任务</code>类似的做法来解决此问题，不过这种方式需要对每一个定时任务入口类和控制器进行额外的编码处理，带来了不少的工作量。这里有一种一劳永逸的方法，就是修改服务层的切面类 <code>ServiceExecutionAdvice</code>，直接处理 en_US 的情况。这样一来，无论请求是从定时任务还是 Rest API 过来，只要遵循服务的处理都是通过调用服务接口方法并且<strong>传入 IRequest 参数实例</strong>，我们就会始终可以获取正确的 locale 值，实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hand.hap.core.impl;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ServiceExecutionAdvice</span> <span class="keyword">implements</span> <span class="title class_">MethodInterceptor</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">SERVER_DEFAULT_LANG</span> <span class="operator">=</span> <span class="string">&quot;en_US&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> IProfileService profileService;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">(Method method, Object[] args, Object target)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="type">IRequest</span> <span class="variable">requestContext</span> <span class="operator">=</span> (IRequest) args[idx];</span><br><span class="line">        <span class="keyword">if</span> (requestContext != <span class="literal">null</span>) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>(SERVER_DEFAULT_LANG.equals(requestContext.getLocale())) &#123;</span><br><span class="line">                requestContext.setLocale(</span><br><span class="line">                    profileService.getProfileValue(<span class="literal">null</span>, <span class="string">&quot;SYSTEM_LANG&quot;</span>));</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            RequestHelper.setCurrentRequest(requestContext);</span><br><span class="line">            initMDC(requestContext);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>eliu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://eliu.github.io/2018/10/15/hap-i18n-irequest/" title="在非页面入口处理多语言环境">https://eliu.github.io/2018/10/15/hap-i18n-irequest/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/i18n/" rel="tag"># i18n</a>
+              <a href="/tags/iRequest/" rel="tag"># iRequest</a>
+              <a href="/tags/locale/" rel="tag"># locale</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/10/09/hap-enable-new-language/" rel="prev" title="为HAP应用启用新语言支持">
+                  <i class="fa fa-angle-left"></i> 为HAP应用启用新语言支持
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/10/17/hap-email-account-ssl-setup/" rel="next" title="HAP SSL 邮件账户设置">
+                  HAP SSL 邮件账户设置 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="35c9ac1ffd808744ac32f927c69f6f7a"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2018 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">eliu. All rights reserved.</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eliu" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"$HEXO_CHANGYAN_APPID","appkey":"$HEXO_CHANGYAN_APPKEY","count":true}</script>
+<script src="/js/third-party/comments/changyan.js" defer></script>
+
+</body>
+</html>
