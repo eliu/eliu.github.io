@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -215,6 +215,116 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2018/10/15/hap-i18n-irequest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="eliu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+      <meta itemprop="description" content="楓の葉的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 楓の葉">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2018/10/15/hap-i18n-irequest/" class="post-title-link" itemprop="url">在非页面入口处理多语言环境</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-10-15 16:11:09" itemprop="dateCreated datePublished" datetime="2018-10-15T16:11:09+08:00">2018-10-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-09-30 09:54:53" itemprop="dateModified" datetime="2025-09-30T09:54:53+08:00">2025-09-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/HAP/" itemprop="url" rel="index"><span itemprop="name">HAP</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="在非页面入口处理多语言环境" href="/2018/10/15/hap-i18n-irequest/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::35c9ac1ffd808744ac32f927c69f6f7a" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在 HAP 中，从浏览器打开的页面或者调用的 Rest API 都必须经过控制器层，而控制器层可以很容易地获取 <code>HttpServletRequest</code> 对象，进而构造 <code>IRequest</code> 对象来存储环境上下文信息，这里就包括当前的语言环境。</p>
+<p>举例说明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> ResponseData <span class="title function_">processRequest</span><span class="params">(HttpServletRequest request)</span> &#123;</span><br><span class="line">    <span class="type">IRequest</span> <span class="variable">iRequest</span> <span class="operator">=</span> <span class="built_in">this</span>.createRequestContext(request);</span><br><span class="line">    <span class="comment">// 调用服务层方法并传入 IRequest 进行业务处理</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ResponseData</span>(service.someMethod(iRequest));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此在控制器层获取当前设置的语言环境是轻而易举的事情。不过，HAP 开发过程中会有很多其他的场景不会将控制器作为入口进入。在<code>任务管理</code>、<code>定时任务</code>、<code>工作流</code>和<code>UReport2报表</code>中，核心程序的入口都是通过向 Spring 注册一些通用的服务组件(<code>@Component</code>) 并实现特定的接口来实现的。因此这种场景下，如何构建一个正确的 IRequest 对象就成为一个很有技巧性的问题了。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/10/15/hap-i18n-irequest/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
