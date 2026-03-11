@@ -217,11 +217,11 @@
       
         <tags>
             
+            <tag> docker </tag>
+            
             <tag> k3d </tag>
             
             <tag> k3s </tag>
-            
-            <tag> docker </tag>
             
         </tags>
       
@@ -246,9 +246,9 @@
       
         <tags>
             
-            <tag> docker </tag>
-            
             <tag> kind </tag>
+            
+            <tag> docker </tag>
             
         </tags>
       
@@ -356,9 +356,9 @@
       
         <tags>
             
-            <tag> gitbook </tag>
-            
             <tag> git </tag>
+            
+            <tag> gitbook </tag>
             
         </tags>
       
