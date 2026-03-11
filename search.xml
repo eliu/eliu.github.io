@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>CosyVoice2 启用 VLLM 推理模型</title>
+      <link href="/2026/03/11/cosyvoice-vllm-enablement/"/>
+      <url>/2026/03/11/cosyvoice-vllm-enablement/</url>
+      
+        <content type="html"><![CDATA[<p>启用 VLLM 推理加速可以提高 CosyVoice 的的文字识别速度，启用前后解析时间会缩短一半左右。本教程以 CosyVoice2-0.5B 为例来介绍如何启用 vLLM 加速推理。</p><h2 id="启用流程"><a href="#启用流程" class="headerlink" title="启用流程"></a>启用流程</h2><h3 id="安装-vLLM-依赖"><a href="#安装-vLLM-依赖" class="headerlink" title="安装 vLLM 依赖"></a>安装 vLLM 依赖</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install vllm==v0.9.0 transformers==4.51.3 numpy==1.26.4 -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com</span><br></pre></td></tr></table></figure><h3 id="引入-CosyVoice2ForCausalLM"><a href="#引入-CosyVoice2ForCausalLM" class="headerlink" title="引入 CosyVoice2ForCausalLM"></a>引入 CosyVoice2ForCausalLM</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> vllm <span class="keyword">import</span> ModelRegistry</span><br><span class="line"><span class="keyword">from</span> cosyvoice.vllm.cosyvoice2 <span class="keyword">import</span> CosyVoice2ForCausalLM</span><br></pre></td></tr></table></figure><h3 id="注册-CosyVoice2ForCausalLM"><a href="#注册-CosyVoice2ForCausalLM" class="headerlink" title="注册 CosyVoice2ForCausalLM"></a>注册 CosyVoice2ForCausalLM</h3><p>在<strong>初始化 AutoModel 之前</strong>执行加入以下代码注册模型：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ModelRegistry.register_model(<span class="string">&quot;CosyVoice2ForCausalLM&quot;</span>, CosyVoice2ForCausalLM)</span><br></pre></td></tr></table></figure><h3 id="增加初始化参数"><a href="#增加初始化参数" class="headerlink" title="增加初始化参数"></a>增加初始化参数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cosyvoice = AutoModel(model_dir=<span class="string">&#x27;pretrained_models/CosyVoice2-0.5B&#x27;</span>,</span><br><span class="line">                      fp16=<span class="literal">True</span>, </span><br><span class="line">                      load_vllm=<span class="literal">True</span>,</span><br><span class="line">                      load_trt=<span class="literal">True</span>, </span><br><span class="line">                      load_jit=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure><blockquote><p>注意要找一个显存充足的显卡，可通过 <code>export CUDA_VISIBLE_DEVICES=3</code> 来指定 CosyVoice 使用的显卡。</p></blockquote><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul><li><a href="https://deepwiki.com/FunAudioLLM/CosyVoice/2.2-quick-start-examples#vllm-accelerated-inference">Quick Start Examples | FunAudioLLM/CosyVoice | DeepWiki</a></li><li><a href="https://github.com/FunAudioLLM/CosyVoice?tab=readme-ov-file#vllm-usage">FunAudioLLM/CosyVoice: vLLM Usage</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> ASR </category>
+          
+          <category> TTS </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>VSCode Python 常用代码片段</title>
       <link href="/2025/10/09/vscode-python-code-snnipets/"/>
       <url>/2025/10/09/vscode-python-code-snnipets/</url>
