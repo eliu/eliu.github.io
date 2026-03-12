@@ -66,7 +66,7 @@
 <meta property="og:image" content="https://eliu.github.io/2026/03/12/openclaw-quickstart/image-20260228170227728.png">
 <meta property="og:image" content="https://eliu.github.io/2026/03/12/openclaw-quickstart/image-20260228170800645.png">
 <meta property="article:published_time" content="2026-03-12T04:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-12T04:13:03.576Z">
+<meta property="article:modified_time" content="2026-03-12T09:02:39.227Z">
 <meta property="article:author" content="eliu">
 <meta property="article:tag" content="openclaw">
 <meta property="article:tag" content="AI">
@@ -299,7 +299,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2026-03-12 12:00:00 / 修改时间：12:13:03" itemprop="dateCreated datePublished" datetime="2026-03-12T12:00:00+08:00">2026-03-12</time>
+      <time title="创建时间：2026-03-12 12:00:00 / 修改时间：17:02:39" itemprop="dateCreated datePublished" datetime="2026-03-12T12:00:00+08:00">2026-03-12</time>
     </span>
 
   
@@ -382,8 +382,8 @@
 
 
 
-<h4 id="安装-Node"><a href="#安装-Node" class="headerlink" title="安装 Node"></a>安装 Node</h4><p><strong>第一种方式</strong>：使用 Homebrew 安装，我们以当前最新的 LTS 版本 24 为例，安装命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install node@24</span><br></pre></td></tr></table></figure>
+<h4 id="安装-Node"><a href="#安装-Node" class="headerlink" title="安装 Node"></a>安装 Node</h4><p><strong>第一种方式</strong>：使用 Homebrew 安装，我们以当前最新的 LTS 版本 22 为例，安装命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install node@22</span><br></pre></td></tr></table></figure>
 
 <p>注意，如果你的操作系统版本官方已不再支持的话，你会收到 Homebrew 的以下提醒，并且很有可能会通过源码编译的方式在本机安装软件和依赖。此时最好放弃这个安装方法，直接到 Node 官网寻找预编译的安装包。</p>
 <blockquote>
@@ -405,6 +405,12 @@
 
 <p>验证安装结果：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">node -v</span></span><br><span class="line">v22.22.0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">npm -v</span></span><br><span class="line">10.9.4</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">npm config get registry</span></span><br><span class="line">https://registry.npmmirror.com/</span><br></pre></td></tr></table></figure>
+
+<p>下一步检查 <code>node_modules</code> 文件夹的权限，该文件夹默认安装在 /usr/local/lib/node_modules，请使用以下命令检查目录权限：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ls</span> -l /usr/local/lib/node_modules</span></span><br><span class="line">drwxr-xr-x	8	root	wheel	256 1 13 04:55 corepack</span><br><span class="line">drwxr-xr-x	12	root	wheel	256 1 13 04:55 npm</span><br></pre></td></tr></table></figure>
+
+<p>如果输出的权限如上所示是 <code>root:wheel</code> 的话，则需要修复目录权限，命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R $USER /usr/local/lib/node_modules</span><br></pre></td></tr></table></figure>
 
 
 
