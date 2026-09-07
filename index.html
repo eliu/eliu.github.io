@@ -176,18 +176,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">48</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -215,6 +215,148 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2026/09/07/deerflow-setup-mirrors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="eliu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="楓の葉">
+      <meta itemprop="description" content="楓の葉的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 楓の葉">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/09/07/deerflow-setup-mirrors/" class="post-title-link" itemprop="url">deerflow 2.0 国内镜像加速设置</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-09-07 14:54:42 / 修改时间：15:35:01" itemprop="dateCreated datePublished" datetime="2026-09-07T14:54:42+08:00">2026-09-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/deerflow/" itemprop="url" rel="index"><span itemprop="name">deerflow</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="deerflow 2.0 国内镜像加速设置" href="/2026/09/07/deerflow-setup-mirrors/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::43bce17da4925298fadc57be5d6346fb" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>本博客针对 DeerFlow 2.0 相关的文章不会长篇大论的进行介绍，DeerFlow 的 <a target="_blank" rel="noopener" href="https://github.com/bytedance/deer-flow">GitHub 主页</a>上文档非常的详细，此处的全部相关文章全部以解决实际痛点和特定场景问题为主。</p>
+</blockquote>
+<p>在国内网络受限的情况下，deerflow需要在不同的位置设置替换国内镜像加速源来加速服务的构建和启动。</p>
+<h2 id="镜像加速分析"><a href="#镜像加速分析" class="headerlink" title="镜像加速分析"></a>镜像加速分析</h2><p>下表列出了 DeerFlow 2.0 （以下简称“deerflow”） 主要服务以及需要设置国内镜像加速的位置：</p>
+<table>
+<thead>
+<tr>
+<th>服务</th>
+<th>说明</th>
+<th>是否需要镜像加速</th>
+<th>镜像分类</th>
+<th>环境变量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NGINX</td>
+<td>统一反向代理</td>
+<td>否</td>
+<td>/</td>
+<td></td>
+</tr>
+<tr>
+<td>FRONTEND</td>
+<td>基于 Next.js 的前端 WEB UI</td>
+<td><strong>是</strong></td>
+<td>npm</td>
+<td><code>NPM_REGISTRY</code></td>
+</tr>
+<tr>
+<td>GATEWAY</td>
+<td>基于 FastAPI 的网关服务</td>
+<td><strong>是</strong></td>
+<td>uv</td>
+<td><code>UV_INDEX_URL</code></td>
+</tr>
+</tbody></table>
+<p>此外，如果 deerflow 以容器化的方式启动的话，服务镜像在构建过程中会安装软件依赖。如有必要，此处也要进行国内镜像源的设置，关键的环境变量是 <code>APT_MIRROR</code>。</p>
+<blockquote>
+<p>参考来源：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/bytedance/deer-flow/blob/d1f1c49dcd872aeb7aec6114ca36f6ee6760fed6/backend/Dockerfile#L22-L26">https://github.com/bytedance/deer-flow/blob/d1f1c49dcd872aeb7aec6114ca36f6ee6760fed6/backend/Dockerfile#L22-L26</a></p>
+</blockquote>
+<h2 id="应用镜像加速设置"><a href="#应用镜像加速设置" class="headerlink" title="应用镜像加速设置"></a>应用镜像加速设置</h2><p>在启动 deerflow 前设置以下环境变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NPM_REGISTRY=https://registry.npmmirror.com</span><br><span class="line"><span class="built_in">export</span> UV_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line"><span class="built_in">export</span> APT_MIRROR=mirrors.aliyun.com</span><br></pre></td></tr></table></figure>
+
+<p>之后需要重新生成 uv 的锁文件（<strong>重要！</strong>）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> backend</span><br><span class="line">uv lock</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1162,112 +1304,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://eliu.github.io/2022/05/12/personal-notes-001/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.png">
-      <meta itemprop="name" content="eliu">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="楓の葉">
-      <meta itemprop="description" content="楓の葉的博客">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 楓の葉">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/05/12/personal-notes-001/" class="post-title-link" itemprop="url">个人日记001-上班与下班</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-05-12 21:59:27" itemprop="dateCreated datePublished" datetime="2022-05-12T21:59:27+08:00">2022-05-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-09-30 09:54:53" itemprop="dateModified" datetime="2025-09-30T09:54:53+08:00">2025-09-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%8A%80%E6%9C%AF%E6%97%A0%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">技术无关</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Changyan：</span>
-    
-    <a title="个人日记001-上班与下班" href="/2022/05/12/personal-notes-001/#SOHUCS" itemprop="discussionUrl">
-      <span id="sourceId::d916528be5abc0501e3e4b39f9412803" class="cy_cmt_count" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>这周搞错框架升级上线的日期，以为是本周六上线，这两天拼命的适配框架，闹了个乌龙。不过也好，手上的任务早做完早轻松（不知是否真的如此~）。今天下班前问了同事，才知本周不上线，看了一下时间，已经是晚上 9 点多了。。</p>
-<p>大厂真的是人尽其用，每天安排给你的任务差不多到了 24 小时轮轴转也没法完成的地步。每周各种进度例会，每天被各种业务同事拉会看问题，问题种类五花八门。与此同时，自己手上还有开发要做，有仓库要守护，简直忙的不亦乐乎。</p>
-<p>得知任务无需本周完成之后，反手就是起身打卡下班。外面下着雨，回去的路上突然被一个电话会议拉了进去，上来直接跟我说 UAT 测试有问题，让我上线跟他们看问题。不好意思，我已经下班了，有事明天再说，谢谢~</p>
-<ul>
-<li>看问题非要赶在晚上九点多看么</li>
-<li>有测试问题处理要不要打提前量</li>
-</ul>
-<p>累过之后，渐渐学会区分上班和下班，也要学会说不。</p>
-
       
     </div>
 
