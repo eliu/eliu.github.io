@@ -20,10 +20,10 @@
   --btn-default-hover-bg: #222;
   --btn-default-hover-color: #fff;
   --btn-default-hover-border-color: #222;
-  --highlight-background: #fefefe;
-  --highlight-foreground: #545454;
-  --highlight-gutter-background: #ededed;
-  --highlight-gutter-foreground: #656565;
+  --highlight-background: #f3f3f3;
+  --highlight-foreground: #444;
+  --highlight-gutter-background: #e1e1e1;
+  --highlight-gutter-foreground: #555;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -49,10 +49,10 @@
     --btn-default-hover-bg: #666;
     --btn-default-hover-color: #ccc;
     --btn-default-hover-border-color: #666;
-    --highlight-background: #2b2b2b;
-    --highlight-foreground: #f8f8f2;
-    --highlight-gutter-background: #3f3f3e;
-    --highlight-gutter-foreground: #e3e3de;
+    --highlight-background: #1c1b1b;
+    --highlight-foreground: #fff;
+    --highlight-gutter-background: #323131;
+    --highlight-gutter-foreground: #e8e8e8;
     color-scheme: dark;
   }
   img {
@@ -413,90 +413,113 @@ code.hljs {
   padding: 3px 5px
 }
 /*!
-  Theme: a11y-light
-  Author: @ericwbailey
-  Maintainer: @ericwbailey
-
-  Based on the Tomorrow Night Eighties theme: https://github.com/isagalaev/highlight.js/blob/master/src/styles/tomorrow-night-eighties.css
+  Theme: Default
+  Description: Original highlight.js style
+  Author: (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
+  Maintainer: @highlightjs/core-team
+  Website: https://highlightjs.org/
+  License: see project LICENSE
+  Touched: 2021
 */
+/*
+This is left on purpose making default.css the single file that can be lifted
+as-is from the repository directly without the need for a build step
+
+Typically this "required" baseline CSS is added by `makestuff.js` during build.
+*/
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/* end baseline CSS */
 .hljs {
-  background: #fefefe;
-  color: #545454
+  background: #F3F3F3;
+  color: #444
 }
-/* Comment */
-.hljs-comment,
-.hljs-quote {
-  color: #696969
+/* Base color: saturation 0; */
+.hljs-subst {
+  /* default */
+  
 }
-/* Red */
-.hljs-variable,
-.hljs-template-variable,
+/* purposely ignored */
+.hljs-formula,
+.hljs-attr,
+.hljs-property,
+.hljs-params {
+  
+}
+.hljs-comment {
+  color: #697070
+}
 .hljs-tag,
-.hljs-name,
+.hljs-punctuation {
+  color: #444a
+}
+.hljs-tag .hljs-name,
+.hljs-tag .hljs-attr {
+  color: #444
+}
+.hljs-keyword,
+.hljs-attribute,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag,
+.hljs-name {
+  font-weight: bold
+}
+/* User color: hue: 0 */
+.hljs-type,
+.hljs-string,
+.hljs-number,
 .hljs-selector-id,
 .hljs-selector-class,
-.hljs-regexp,
+.hljs-quote,
+.hljs-template-tag,
 .hljs-deletion {
-  color: #d91e18
+  color: #880000
 }
-/* Orange */
-.hljs-number,
-.hljs-built_in,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
-.hljs-meta,
-.hljs-link {
-  color: #aa5d00
-}
-/* Yellow */
-.hljs-attribute {
-  color: #aa5d00
-}
-/* Green */
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-  color: #008000
-}
-/* Blue */
 .hljs-title,
 .hljs-section {
-  color: #007faa
+  color: #880000;
+  font-weight: bold
 }
-/* Purple */
-.hljs-keyword,
-.hljs-selector-tag {
-  color: #7928a1
+.hljs-regexp,
+.hljs-symbol,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-link,
+.hljs-selector-attr,
+.hljs-operator,
+.hljs-selector-pseudo {
+  color: #ab5656
 }
+/* Language color: hue: 90; */
+.hljs-literal {
+  color: #695
+}
+.hljs-built_in,
+.hljs-bullet,
+.hljs-code,
+.hljs-addition {
+  color: #397300
+}
+/* Meta color: hue: 200 */
+.hljs-meta {
+  color: #1f7199
+}
+.hljs-meta .hljs-string {
+  color: #38a
+}
+/* Misc effects */
 .hljs-emphasis {
   font-style: italic
 }
 .hljs-strong {
   font-weight: bold
-}
-@media screen and (-ms-high-contrast: active) {
-  .hljs-addition,
-  .hljs-attribute,
-  .hljs-built_in,
-  .hljs-bullet,
-  .hljs-comment,
-  .hljs-link,
-  .hljs-literal,
-  .hljs-meta,
-  .hljs-number,
-  .hljs-params,
-  .hljs-string,
-  .hljs-symbol,
-  .hljs-type,
-  .hljs-quote {
-    color: highlight
-  }
-  .hljs-keyword,
-  .hljs-selector-tag {
-    font-weight: bold
-  }
 }
 @media (prefers-color-scheme: dark) {
 pre code.hljs {
@@ -508,62 +531,98 @@ code.hljs {
   padding: 3px 5px
 }
 /*!
-  Theme: a11y-dark
-  Author: @ericwbailey
-  Maintainer: @ericwbailey
+  Theme: StackOverflow Dark
+  Description: Dark theme as used on stackoverflow.com
+  Author: stackoverflow.com
+  Maintainer: @Hirse
+  Website: https://github.com/StackExchange/Stacks
+  License: MIT
+  Updated: 2021-05-15
 
-  Based on the Tomorrow Night Eighties theme: https://github.com/isagalaev/highlight.js/blob/master/src/styles/tomorrow-night-eighties.css
+  Updated for @stackoverflow/stacks v0.64.0
+  Code Blocks: /blob/v0.64.0/lib/css/components/_stacks-code-blocks.less
+  Colors: /blob/v0.64.0/lib/css/exports/_stacks-constants-colors.less
 */
 .hljs {
-  background: #2b2b2b;
-  color: #f8f8f2
+  /* var(--highlight-color) */
+  color: #ffffff;
+  /* var(--highlight-bg) */
+  background: #1c1b1b
 }
-/* Comment */
-.hljs-comment,
-.hljs-quote {
-  color: #d4d0ab
+.hljs-subst {
+  /* var(--highlight-color) */
+  color: #ffffff
 }
-/* Red */
+.hljs-comment {
+  /* var(--highlight-comment) */
+  color: #999999
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag,
+.hljs-section {
+  /* var(--highlight-keyword) */
+  color: #88aece
+}
+.hljs-attr {
+  /* var(--highlight-attribute); */
+  color: #88aece
+}
+.hljs-attribute {
+  /* var(--highlight-symbol) */
+  color: #c59bc1
+}
+.hljs-name,
+.hljs-type,
+.hljs-number,
+.hljs-selector-id,
+.hljs-quote,
+.hljs-template-tag {
+  /* var(--highlight-namespace) */
+  color: #f08d49
+}
+.hljs-selector-class {
+  /* var(--highlight-keyword) */
+  color: #88aece
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-symbol,
 .hljs-variable,
 .hljs-template-variable,
-.hljs-tag,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-deletion {
-  color: #ffa07a
+.hljs-link,
+.hljs-selector-attr {
+  /* var(--highlight-variable) */
+  color: #b5bd68
 }
-/* Orange */
-.hljs-number,
-.hljs-built_in,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
 .hljs-meta,
-.hljs-link {
-  color: #f5ab35
+.hljs-selector-pseudo {
+  /* var(--highlight-keyword) */
+  color: #88aece
 }
-/* Yellow */
-.hljs-attribute {
-  color: #ffd700
-}
-/* Green */
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-  color: #abe338
-}
-/* Blue */
+.hljs-built_in,
 .hljs-title,
-.hljs-section {
-  color: #00e0e0
+.hljs-literal {
+  /* var(--highlight-literal) */
+  color: #f08d49
 }
-/* Purple */
-.hljs-keyword,
-.hljs-selector-tag {
-  color: #dcc6e0
+.hljs-bullet,
+.hljs-code {
+  /* var(--highlight-punctuation) */
+  color: #cccccc
+}
+.hljs-meta .hljs-string {
+  /* var(--highlight-variable) */
+  color: #b5bd68
+}
+.hljs-deletion {
+  /* var(--highlight-deletion) */
+  color: #de7176
+}
+.hljs-addition {
+  /* var(--highlight-addition) */
+  color: #76c490
 }
 .hljs-emphasis {
   font-style: italic
@@ -571,27 +630,14 @@ code.hljs {
 .hljs-strong {
   font-weight: bold
 }
-@media screen and (-ms-high-contrast: active) {
-  .hljs-addition,
-  .hljs-attribute,
-  .hljs-built_in,
-  .hljs-bullet,
-  .hljs-comment,
-  .hljs-link,
-  .hljs-literal,
-  .hljs-meta,
-  .hljs-number,
-  .hljs-params,
-  .hljs-string,
-  .hljs-symbol,
-  .hljs-type,
-  .hljs-quote {
-    color: highlight
-  }
-  .hljs-keyword,
-  .hljs-selector-tag {
-    font-weight: bold
-  }
+.hljs-formula,
+.hljs-operator,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
 }
 }
 .highlight:hover .copy-btn,
@@ -894,6 +940,10 @@ pre code {
   100% {
     transform: translate(1pt, -2pt) rotate(-1deg);
   }
+}
+.mermaid {
+  margin-bottom: 20px;
+  text-align: center;
 }
 .post-body .note {
   border-radius: 3px;
@@ -1407,7 +1457,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #2debee;
+    background: #ffee3b;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -2927,6 +2977,7 @@ header.header {
     color: var(--text-color);
     margin-top: 12px;
     max-height: calc(100vh - 24px);
+    visibility: hidden;
   }
   .site-state-item {
     padding: 0 10px;
